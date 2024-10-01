@@ -17,6 +17,9 @@ const config: Config = {
         '5D5FEF': '#5D5FEF',
         CF0707: '#CF0707',
         EF5DA8: '#EF5DA8',
+        '27AE65': '#27AE65',
+        '27AE6510': '#27AE6510',
+        FCDDEC: '#FCDDEC',
       },
       fontFamily: {
         ng_regular: 'ng_regular',
