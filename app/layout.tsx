@@ -15,7 +15,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={` antialiased`}
+        // className={`font-ng_regular antialiased`}
+        className={`antialiased`}
       >
         <BasePageGrid>
           {children}

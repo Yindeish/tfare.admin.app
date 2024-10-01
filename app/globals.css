@@ -2,6 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  @font-face {
+    font-family: 'ng_regular';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('/app/fonts/neurial_grotesk/regular.otf') format('otf');
+  }
+  @font-face {
+    font-family: 'ng_medium';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('/app/fonts/neurial_grotesk/medium.otf') format('otf');
+  }
+  @font-face {
+    font-family: 'ng_bold';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('/app/fonts/neurial_grotesk/bold.otf') format('otf');
+  }
+  @font-face {
+    font-family: 'ng_extrabold';
+    font-style: normal;
+    font-weight: 900;
+    font-display: swap;
+    src: url('/app/fonts/neurial_grotesk/extrabold.otf') format('otf');
+  }
+ 
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
