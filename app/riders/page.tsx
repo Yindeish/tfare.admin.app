@@ -1,11 +1,14 @@
 'use client'
+import RiderModal from "@/components/riders/modalComponents";
 import KeyValueBlock from "@/components/shared/key_value_block";
+import Modal from "@/components/shared/modal";
 import StatusBadge from "@/components/shared/status_badge";
 import SubHeader from "@/components/shared/sub_header";
 import { GridViewCTA, RowViewCTA, SortCTA } from "@/components/shared/sub_header_components";
 import homeimages from "@/constants/images/home";
 import shared_images from "@/constants/images/shared";
 import { useLayoutContext } from "@/context.state/shared/layout";
+import { useModal } from "@/context.state/shared/modal";
 import { Expand } from "@/public/icons/homeSvgs";
 import { useState } from "react";
 
@@ -13,6 +16,7 @@ import { useState } from "react";
 function Page() {
   const [currentTab, setCurrentTab] = useState<'all' | 'new'>('all')
   const { state, updateState } = useLayoutContext()
+  const { showModal } = useModal()
 
   const activeSvgClassName = "w-[20px] h-[20px] text-5D5FEF";
   const inActiveSvgClassName = "w-[20px] h-[20px] text-black";
@@ -57,7 +61,8 @@ function Page() {
 
           <div className="w-full h-fit grid grid-cols-3 gap-[1em]">
             {arr.map((_, index) => (
-              <div className="col-span-1 w-full h-[40vh] flex flex-col gap-[1em] rounded-[20px] p-[1.3em] bg-white" style={{ boxShadow: '0px 0px 10px 0px #00000010' }} key={index}>
+              <div
+                className="col-span-1 w-full h-[42vh] flex flex-col gap-[1em] rounded-[20px] p-[1.3em] bg-white" style={{ boxShadow: '0px 0px 10px 0px #00000010' }} key={index}>
 
                 <div className="w-full h-fit flex items-start justify-between">
                   <img className="w-[50px] h-[50px] rounded-full" src={shared_images.user_profile_image.src} alt="" />
@@ -67,7 +72,9 @@ function Page() {
                     <span className="font-normal text-[12px] text-747474">#153710YUW</span>
                   </div>
 
-                  <Expand className="w-[18px] h-[18px] text-747474" />
+                  <Expand onClick={() => {
+                    showModal(<RiderModal />, false)
+                  }} className="w-[18px] h-[18px] text-747474 cursor-pointer" />
                 </div>
 
                 <KeyValueBlock
@@ -146,7 +153,9 @@ function Page() {
                     <span className="font-medium text-[12px] text-747474">#153710YUW</span>
                   </div>
 
-                  <Expand className="w-[18px] h-[18px] cursor-pointer" />
+                  <Expand onClick={() => {
+                    showModal(<RiderModal />, false)
+                  }} className="w-[18px] h-[18px] cursor-pointer" />
                 </div>
                 {/* //!User Avatar,Username,User ID, Expand CTA */}
 
@@ -175,6 +184,10 @@ function Page() {
         </div>)
         // !Row View
       }
+
+      {/* //!Modal */}
+      <Modal containerClassName="w-[97vw] h-[90vh] top-[10vh] p-0 rounded-tl-[20px] rounded-tr-[20px]" />
+      {/* //!Modal */}
 
     </div>
   )

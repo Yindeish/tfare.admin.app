@@ -56,8 +56,8 @@ const Buckets = ({ className }: ISVGProps) => (
 
 )
 
-const Expand = ({ className }: ISVGProps) => (
-    <svg className={className} viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+const Expand = ({ className, onClick = () => { } }: ISVGProps & { onClick?: () => void }) => (
+    <svg onClick={onClick} className={className} viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M7 1.69556H1V7.69556" stroke="#747474" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M13 19.6956H19V13.6956" stroke="#747474" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M13 1.69556H19V7.69556" stroke="#747474" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
