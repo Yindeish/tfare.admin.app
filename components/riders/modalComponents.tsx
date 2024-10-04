@@ -152,7 +152,7 @@ function RiderModal() {
 
                             <span className=" flex items-center justify-center">₦ 500.00</span>
 
-                            <span className="flex items-center justify-center"><StatusBadge status="Ongoing" /></span>
+                            <span className="flex items-center justify-center"><StatusBadge status="Ongoing" className="bg-FFAE0210 text-FFAE02" dotClassName="text-FFAE02" /></span>
 
                         </div>
                     ))}

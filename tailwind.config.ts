@@ -20,6 +20,10 @@ const config: Config = {
         '27AE65': '#27AE65',
         '27AE6510': '#27AE6510',
         FCDDEC: '#FCDDEC',
+        FFAE0210: '#FFAE0210',
+        FFAE02: '#FFAE02',
+        CF07071A10: '#CF07071A10',
+        CF07071A: '#CF07071A',
       },
       fontFamily: {
         ng_regular: 'ng_regular',
