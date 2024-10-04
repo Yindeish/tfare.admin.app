@@ -5,8 +5,8 @@ import Modal from "@/components/shared/modal";
 import StatusBadge from "@/components/shared/status_badge";
 import SubHeader from "@/components/shared/sub_header";
 import { GridViewCTA, RowViewCTA, SortCTA } from "@/components/shared/sub_header_components";
-import homeimages from "@/constants/images/home";
 import shared_images from "@/constants/images/shared";
+import { useRiderContext } from "@/context.state/rider";
 import { useLayoutContext } from "@/context.state/shared/layout";
 import { useModal } from "@/context.state/shared/modal";
 import { Expand } from "@/public/icons/homeSvgs";
@@ -15,8 +15,9 @@ import { useState } from "react";
 
 function Page() {
   const [currentTab, setCurrentTab] = useState<'all' | 'new'>('all')
-  const { state, updateState } = useLayoutContext()
+  const { state: layoutState, updateState } = useLayoutContext()
   const { showModal } = useModal()
+  const { state, handlers } = useRiderContext()
 
   const activeSvgClassName = "w-[20px] h-[20px] text-5D5FEF";
   const inActiveSvgClassName = "w-[20px] h-[20px] text-black";
@@ -40,12 +41,12 @@ function Page() {
           <div className="w-fit h-full flex items-center gap-[20px]">
             <GridViewCTA
               onClick={() => updateState({ key: 'view', value: 'grid' })}
-              svgClassName={state.view === 'grid' ? activeSvgClassName : inActiveSvgClassName}
+              svgClassName={layoutState.view === 'grid' ? activeSvgClassName : inActiveSvgClassName}
             />
 
             <RowViewCTA
               onClick={() => updateState({ key: 'view', value: 'row' })}
-              svgClassName={state.view === 'row' ? activeSvgClassName : inActiveSvgClassName}
+              svgClassName={layoutState.view === 'row' ? activeSvgClassName : inActiveSvgClassName}
             />
 
             <SortCTA
@@ -55,7 +56,7 @@ function Page() {
         )}
       />
 
-      {state.view === 'grid' ?
+      {layoutState.view === 'grid' ?
         // !Grid View
         (<div className="w-[85%] h-[calc(100%-74px)] mx-auto py-[1em] bg-f9f7f8 overflow-y-scroll">
 
@@ -73,6 +74,11 @@ function Page() {
                   </div>
 
                   <Expand onClick={() => {
+                    handlers.setLocalState({
+                      key: 'selectedRider', value: {
+
+                      }
+                    })
                     showModal(<RiderModal />, false)
                   }} className="w-[18px] h-[18px] text-747474 cursor-pointer" />
                 </div>
@@ -186,7 +192,7 @@ function Page() {
       }
 
       {/* //!Modal */}
-      <Modal containerClassName="w-[97vw] h-[90vh] top-[10vh] p-0 rounded-tl-[20px] rounded-tr-[20px]" />
+      <Modal containerClassName="w-[97vw] h-[90vh] top-[5vh] p-0 rounded-tl-[20px] rounded-tr-[20px]" />
       {/* //!Modal */}
 
     </div>

@@ -4,17 +4,13 @@ import { createContext, FC, ReactNode, useContext, useState } from "react";
 
 // !Interfaces
 // !Input State
-interface IDashboardContextSharedInputState {
-
-}
-
-interface IDashboardContextRidersInputState {
+interface IRidersContextInputState {
 
 }
 // !Input State
 
 // !Local State
-interface IDashboardContextRidersLocalState {
+interface IRidersContextLocalState {
     allRiders: [],
     newRiders: [],
     selectedRider: Rider | null,
@@ -22,8 +18,8 @@ interface IDashboardContextRidersLocalState {
 // !Local State
 
 interface IRiderContextState {
-    inputs: IDashboardContextRidersInputState,
-    local: IDashboardContextRidersLocalState,
+    inputs: IRidersContextInputState,
+    local: IRidersContextLocalState,
     fetch: {},
 }
 
@@ -31,13 +27,15 @@ interface IRiderContextState {
 interface Rider {
 
 }
+// !Individuals
+
 
 interface IRiderContext {
     state: IRiderContextState,
     handlers: {
-        setInputState: ({ }: { key: keyof IDashboardContextRidersInputState, value: any }) => void,
-        setLocalState: ({ }: { key: keyof IDashboardContextRidersLocalState, value: any }) => void,
-        setFetchState: ({ }: { key: keyof IDashboardContextRidersInputState, value: any }) => void,
+        setInputState: ({ key, value }: { key: keyof IRidersContextInputState, value: any }) => void,
+        setLocalState: ({ key, value }: { key: keyof IRidersContextLocalState, value: any }) => void,
+        setFetchState: ({ key, value }: { key: keyof IRidersContextInputState, value: any }) => void,
     }
 }
 
@@ -48,13 +46,19 @@ function RiderContextProvider({ children }: { children: ReactNode }) {
         fetch: {
 
         },
-        inputs: {},
+        inputs: {
+
+        },
         local: {
             allRiders: [],
             newRiders: [],
             selectedRider: null
         }
     })
+
+    const setFetchState = () => { }
+    const setInputState = () => { }
+    const setLocalState = () => { }
 
     return (
         <RiderContext.Provider value={{

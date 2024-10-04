@@ -26,11 +26,11 @@ function RowViewCTA({ onClick, svgClassName }: ICTA) {
     )
 }
 
-function SortCTA({ onClick }: Pick<ICTA, 'onClick'>) {
+function SortCTA({ onClick, className = '' }: Pick<ICTA, 'onClick'> & { className?: string }) {
 
 
     return (
-        <span onClick={() => onClick()} className="w-fit h-[45px] rounded-full flex items-center justify-center gap-[10px] border-[0.7px] border-d7d7d7 p-[1em] cursor-pointer">
+        <span onClick={() => onClick()} className={`w-fit h-[45px] rounded-full flex items-center justify-center gap-[10px] border-[0.7px] border-d7d7d7 p-[1em] cursor-pointer ${className}`}>
             <svg className="w-[20px] h-[20px] text-black" viewBox="0 0 21 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4.5 3.5H1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M19.5 3.5H10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

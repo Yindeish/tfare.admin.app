@@ -1,23 +1,33 @@
 'use client'
 import homeimages from "@/constants/images/home";
+import { useHomeContext } from "@/context.state/home";
 import { Buckets, Bus, CarProceed, Expand, HeadPhone } from "@/public/icons/homeSvgs";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { GoChevronDown } from "react-icons/go";
 
 
 
 function Home() {
     const router = useRouter()
+    const { state, handlers } = useHomeContext()
+
+    useEffect(() => {
+        handlers.setLocalState({ key: 'activeRides', value: 124 })
+        handlers.setLocalState({ key: 'activeTrips', value: 157 })
+        handlers.setLocalState({ key: 'pendingTickets', value: 13 })
+        handlers.setLocalState({ key: 'totalEarnings', value: 200 })
+    })
 
     return (
         <div className="w-full h-full p-[2em] bg-f9f7f8 grid grid-cols-4 grid-rows-[27%_73%] gap-[24px]">
 
             {/* //!Shortcuts, Active Rides, Active Trips, Pending Tickets, Total Earnings */}
             {[
-                { title: 'Active Rides', value: '124', link: '/rides', icon: <CarProceed className="text-EF5DA8 w-[29px] h-[25px]" /> },
-                { title: 'Active trips', value: '157', link: '/trips', icon: <Bus className="text-EF5DA8 w-[30px] h-[30px]" /> },
-                { title: 'Pending Tickets', value: '13', link: '/tickets', icon: <HeadPhone className="text-EF5DA8 w-[30px] h-[25px]" /> },
-                { title: 'Total Earnings', value: '200', link: '/earnings', icon: <Buckets className="text-EF5DA8 w-[30px] h-[30px]" /> },
+                { title: 'Active Rides', value: state.local.activeRides, link: '/rides', icon: <CarProceed className="text-EF5DA8 w-[29px] h-[25px]" /> },
+                { title: 'Active trips', value: state.local.activeTrips, link: '/trips', icon: <Bus className="text-EF5DA8 w-[30px] h-[30px]" /> },
+                { title: 'Pending Tickets', value: state.local.pendingTickets, link: '/tickets', icon: <HeadPhone className="text-EF5DA8 w-[30px] h-[25px]" /> },
+                { title: 'Total Earnings', value: state.local.totalEarnings, link: '/earnings', icon: <Buckets className="text-EF5DA8 w-[30px] h-[30px]" /> },
             ].map(({ icon, title, value, link }, index) => (
                 <div className="col-span-1 row-span-1 w-full h-full rounded-[10px] flex flex-col gap-[10px] p-[0.85em] bg-white" style={{ boxShadow: '0px 0px 10px 0px #00000010' }} key={index}>
                     <div className="w-full flex items-center justify-between">

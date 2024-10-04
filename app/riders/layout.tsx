@@ -2,7 +2,7 @@ import RiderContextProvider from "@/context.state/rider";
 import { ReactNode } from "react";
 
 
-function DriversLayout({ children }: { children: ReactNode }) {
+function RidersLayout({ children }: { children: ReactNode }) {
 
 
 
@@ -13,4 +13,4 @@ function DriversLayout({ children }: { children: ReactNode }) {
     </RiderContextProvider>)
 }
 
-export default DriversLayout;
+export default RidersLayout;
