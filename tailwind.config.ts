@@ -24,6 +24,7 @@ const config: Config = {
         FFAE02: '#FFAE02',
         CF07071A10: '#CF07071A10',
         CF07071A: '#CF07071A',
+
       },
       fontFamily: {
         ng_regular: 'ng_regular',

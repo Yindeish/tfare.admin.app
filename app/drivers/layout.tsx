@@ -1,4 +1,4 @@
-import RiderContextProvider from "@/context.state/rider";
+import DriverContextProvider from "@/context.state/driver";
 import { ReactNode } from "react";
 
 
@@ -6,11 +6,11 @@ function DriversLayout({ children }: { children: ReactNode }) {
 
 
 
-    return (<RiderContextProvider>
+    return (<DriverContextProvider>
         {
             children
         }
-    </RiderContextProvider>)
+    </DriverContextProvider>)
 }
 
 export default DriversLayout;
