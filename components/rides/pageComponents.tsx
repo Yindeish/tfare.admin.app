@@ -9,16 +9,10 @@ import { useState } from "react";
 import RideTripModal from "@/components/rides/modalComponents";
 import StatusBadge from "../shared/status_badge";
 
-function RideGridView() {
+function RideGridView({ currentFilter }: { currentFilter: 'order' | 'user' }) {
     const { state: layoutState, updateState } = useLayoutContext()
     const { showModal } = useModal()
     const { state, handlers } = useRideContext()
-
-    const [currentTab, setCurrentTab] = useState<'ongoing' | 'completed'>('ongoing');
-    const [currentFilter, setCurrentFilter] = useState<'order' | 'user'>('order');
-
-    const activeSvgClassName = "w-[20px] h-[20px] text-5D5FEF";
-    const inActiveSvgClassName = "w-[20px] h-[20px] text-black";
 
     const arr = Array.from({ length: 20 });
 
@@ -27,7 +21,7 @@ function RideGridView() {
         <div className="w-full h-fit grid grid-cols-3 gap-[1em]">
             {arr.map((_, index) => (
                 <div
-                    className="col-span-1 w-full h-[35vh] flex flex-col gap-[1em] rounded-[20px] p-[1.3em] border-[0.7px] border-27AE65 bg-white" style={{ boxShadow: '0px 0px 10px 0px #00000010' }} key={index}>
+                    className="col-span-1 w-full h-[40vh] flex flex-col gap-[1em] rounded-[20px] p-[1.3em] border-[0.7px] border-27AE65 bg-white" style={{ boxShadow: '0px 0px 10px 0px #00000010' }} key={index}>
 
                     <div className="w-full h-fit flex items-start justify-between">
 
@@ -50,11 +44,22 @@ function RideGridView() {
                     </div>
 
                     <KeyValueBlock
-                        keyValueArray={[
-                            { key: 'Phone Number', value: '+234 561 614 7153' },
-                            { key: 'Email Address', value: 'speter@gmail.com' },
-                            { key: 'Wallet balance', value: '₦ 500.00' },
-                        ]}
+                        keyValueArray={
+                            currentFilter === 'order' ?
+                                [
+                                    { key: 'Driver Name', value: 'Folagbade Roman' },
+                                    { key: 'Pickup', value: 'Ojoo Bus Stop' },
+                                    { key: 'Endpoint', value: 'Dugbe Bus Stop' },
+                                    { key: 'Current Passengers', value: '3' },
+                                ]
+                                :
+                                [
+                                    { key: 'Driver Name', value: '-' },
+                                    { key: 'Pickup', value: 'Ojoo Bus Stop' },
+                                    { key: 'Endpoint', value: 'Dugbe Bus Stop' },
+                                    { key: 'Purchased Tickets', value: '-' },
+                                ]
+                        }
                         containerClassName="gap-[0.75em] pt-[1em] border-t-[0.7px] border-t-d7d7d7"
                         keyClassName="font-normal text-[14px] text-747474"
                         valueClassName="font-normal text-[14px] text-black"
@@ -62,8 +67,8 @@ function RideGridView() {
 
                 </div>
             ))}
-        </div>
 
+        </div>
     </div>)
 }
 

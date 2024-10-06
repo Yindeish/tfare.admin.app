@@ -58,7 +58,7 @@ function Page() {
       />
 
       {layoutState.view === 'grid' ?
-        <RideGridView />
+        <RideGridView currentFilter={currentFilter} />
         :
         currentFilter === 'order' ?
           <ByOrderRowView />
