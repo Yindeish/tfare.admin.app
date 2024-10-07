@@ -1,9 +1,9 @@
 import { useModal } from '@/context.state/shared/modal';
-import { ReactNode } from 'react';
+import { HTMLAttributes, ReactNode } from 'react';
 import { FaTimes } from 'react-icons/fa';
 
-const Modal = ({ containerClassName, closeBtnClassName, closeBtn }:
-    { containerClassName?: string, closeBtnClassName?: string, closeBtn?: ReactNode }) => {
+const Modal = ({ containerClassName, closeBtnClassName, closeBtn, style = {} }:
+    { containerClassName?: string, closeBtnClassName?: string, closeBtn?: ReactNode, style?: HTMLAttributes<HTMLDivElement>['style'] }) => {
     const { modals, hideModal, } = useModal();
 
     return (
@@ -13,7 +13,7 @@ const Modal = ({ containerClassName, closeBtnClassName, closeBtn }:
                     key={modal.id}
                     onClick={hideModal}
                     className={`fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 cursor-pointer`}
-                    style={{ zIndex: 50 + index }}
+                    style={{ zIndex: 50 + index, ...style }}
                 >
                     <div onClick={(e: React.MouseEvent) => {
                         e.stopPropagation();
