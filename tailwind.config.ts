@@ -24,6 +24,7 @@ const config: Config = {
         FFAE02: '#FFAE02',
         CF07071A10: '#CF07071A10',
         CF07071A: '#CF07071A',
+        '2C333C': '#2C333C',
 
       },
       fontFamily: {

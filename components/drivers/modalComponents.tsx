@@ -19,7 +19,7 @@ import { useModal } from "@/context.state/shared/modal";
 type TTab = 'order' | 'transaction' | ''
 type TView = 'vehicle-info' | 'orders-transactions' | ''
 
-const ToggleBtn = ({ on, onClick, className = '' }: { on: boolean, onClick: () => void, className?: string }) => (
+export const ToggleBtn = ({ on, onClick, className = '' }: { on: boolean, onClick: () => void, className?: string }) => (
     <div onClick={onClick} className={`${on ? 'bg-27AE65' : 'bg-747474'} w-[35px] h-[20px] rounded-full flex items-center overflow-visible absolute top-[0.75em] right-[0.5em] z-[3] ${className}`}>
         <div className={`bg-white w-[25px] h-[25px] ${on ? 'translate-x-[15px]' : 'translate-x-[-5px]'} rounded-full`}></div>
     </div>

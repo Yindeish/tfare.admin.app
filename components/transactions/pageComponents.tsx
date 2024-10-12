@@ -1,18 +1,6 @@
 'use client'
-import { LuClock3 } from "react-icons/lu";
-import KeyValueBlock from "@/components/shared/key_value_block";
-import { useModal } from "@/context.state/shared/modal";
-import { Bus, Expand } from "@/public/icons/homeSvgs";
-import { useState } from "react";
-import { useTransactionContext } from "@/context.state/transaction";
-import TransactionModal from "./modalComponents";
-import StatusBadge from "../shared/status_badge";
 
 function RowView({ currentFilter }: { currentFilter: "user" | "driver" }) {
-    const { showModal } = useModal()
-    const { handlers } = useTransactionContext()
-
-    const arr = Array.from({ length: 20 });
 
     return (
         <div className="w-full h-full">
