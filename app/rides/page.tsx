@@ -67,7 +67,7 @@ function Page() {
       }
 
       {/* //!Modal */}
-      <Modal containerClassName="w-[97vw] h-[90vh] top-[5vh] p-0 rounded-tl-[20px] rounded-tr-[20px]" />
+      <Modal containerClassName="w-[97vw] h-[90vh] top-[5vh] p-0 rounded-tl-[20px] rounded-tr-[20px] overflow-hidden" containerStyle={{ padding: 0 }} />
       {/* //!Modal */}
 
     </div>
