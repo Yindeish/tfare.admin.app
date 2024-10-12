@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../globals.css";
 import BasePageGrid from "@/components/shared/base_page_grid";
 import LayoutContextProvider from "@/context.state/shared/layout";
 import { ModalProvider } from "@/context.state/shared/modal";
