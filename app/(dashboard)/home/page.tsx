@@ -1,7 +1,9 @@
-'use client'
+'use client';
+
 import homeimages from "@/constants/images/home";
 import { useHomeContext } from "@/context.state/home";
 import { Buckets, Bus, CarProceed, Expand, HeadPhone } from "@/public/icons/homeSvgs";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { GoChevronDown } from "react-icons/go";
@@ -33,9 +35,10 @@ function Home() {
                     <div className="w-full flex items-center justify-between">
                         {icon}
 
-                        <span onClick={() => router.push(link)}>
+                        {/* <span onClick={() => router.push(link)}> */}
+                        <Link href={link}>
                             <Expand className="w-[18px] h-[18px] text-747474 cursor-pointer" />
-                        </span>
+                        </Link>
                     </div>
 
                     <span className="text-[22px] leading-[22px] font-normal text-black">{title}</span>

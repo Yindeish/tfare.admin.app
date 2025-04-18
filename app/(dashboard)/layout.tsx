@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         // className={`font-ng_regular antialiased`}
-        className={`antialiased`}
+        className={`antialiased bg-white`}
       >
         <ModalProvider>
           <LayoutContextProvider>

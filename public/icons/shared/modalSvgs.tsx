@@ -21,16 +21,16 @@ const CloseBtn = ({ className, onClick }: ISVG) => (
 
 const Topup = ({ className, onClick }: ISVG) => (
     <svg className={className} onClick={onClick} viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10.4993 6.6665V13.3332M13.8327 9.99984H7.16602" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M10.4993 18.3332C15.1017 18.3332 18.8327 14.6022 18.8327 9.99984C18.8327 5.39746 15.1017 1.6665 10.4993 1.6665C5.89698 1.6665 2.16602 5.39746 2.16602 9.99984C2.16602 14.6022 5.89698 18.3332 10.4993 18.3332Z" stroke="white" stroke-width="1.5" />
+        <path d="M10.4993 6.6665V13.3332M13.8327 9.99984H7.16602" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M10.4993 18.3332C15.1017 18.3332 18.8327 14.6022 18.8327 9.99984C18.8327 5.39746 15.1017 1.6665 10.4993 1.6665C5.89698 1.6665 2.16602 5.39746 2.16602 9.99984C2.16602 14.6022 5.89698 18.3332 10.4993 18.3332Z" stroke="white" strokeWidth="1.5" />
     </svg>
 
 );
 
 const Deduct = ({ className, onClick }: ISVG) => (
     <svg className={className} onClick={onClick} viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M6.99609 10.0747H13.6661" stroke="white" stroke-width="1.5" stroke-linecap="round" />
-        <path d="M10.5013 18.3332C15.1037 18.3332 18.8346 14.6022 18.8346 9.99984C18.8346 5.39746 15.1037 1.6665 10.5013 1.6665C5.89893 1.6665 2.16797 5.39746 2.16797 9.99984C2.16797 14.6022 5.89893 18.3332 10.5013 18.3332Z" stroke="white" stroke-width="1.5" />
+        <path d="M6.99609 10.0747H13.6661" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M10.5013 18.3332C15.1037 18.3332 18.8346 14.6022 18.8346 9.99984C18.8346 5.39746 15.1037 1.6665 10.5013 1.6665C5.89893 1.6665 2.16797 5.39746 2.16797 9.99984C2.16797 14.6022 5.89893 18.3332 10.5013 18.3332Z" stroke="white" strokeWidth="1.5" />
     </svg>
 
 );
