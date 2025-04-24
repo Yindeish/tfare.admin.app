@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import HeaderUserBlock from "./headerUserBlock";
 import Search from "../routes/svgs/search";
+import { useAuthContext } from "@/context.state/auth";
 
 
 function Header() {
@@ -12,7 +13,7 @@ function Header() {
         if (titleStr == 'in_app_banners') return 'In-app Banner'
         if (titleStr == 'tickets') return 'Support Tickets'
         else return titleStr
-    }
+    };
 
     return (
         <header className="w-[85%] h-full ml-auto flex items-center justify-between gap-[1.5em] pr-[1.5em]">

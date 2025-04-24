@@ -90,7 +90,20 @@ export interface IBusStop {
   order: number;
 }
 
-interface IRoute {}
+type TAllowedPaymentOptions = "cash" | "online" | "wallet" | "point";
+
+export interface IRoute {
+  _id: string;
+  pickupBusstop: IBusStop;
+  dropoffBusstop: IBusStop;
+  inTripDirection: "forward" | "backward";
+  city: ICity;
+  inTripDropoffs: IBusStop[],
+  unitFares: IUnitFare[];
+  editable: boolean;
+  active: boolean;
+  allowedPaymentOptions: TAllowedPaymentOptions[];
+}
 // !Individuals
 
 interface IRouteContext {
