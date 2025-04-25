@@ -1,50 +1,79 @@
-'use client';
-import { createContext, FC, ReactNode, useContext, useState } from "react";
+"use client";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 // !Types
-type TView = 'grid' | 'row'
+type TView = "grid" | "row";
 // !Types
 
 // !Interfaces
 interface ILayoutContextState {
-    view: TView
+  view: TView;
 }
 
 interface ILayoutContext {
-    state: ILayoutContextState,
-    updateState: ({ key, value }: { key: keyof ILayoutContextState, value: any }) => void
+  state: ILayoutContextState;
+  updateState: ({
+    key,
+    value,
+  }: {
+    key: keyof ILayoutContextState;
+    value: any;
+  }) => void;
 }
 // !Interfaces
 
 const LayoutContext = createContext<ILayoutContext | undefined>(undefined);
 
 const LayoutContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-    const [state, setState] = useState<ILayoutContextState>({
-        view: 'grid'
-    })
+  const router = useRouter();
+  const pathname = usePathname();
 
-    const updateState = ({ key, value }: { key: keyof ILayoutContextState, value: any }) => {
-        setState((prev) => ({
-            ...prev,
-            [key]: value
-        }))
-    }
+  const [isLoading, setIsLoading] = useState(true);
+  const [state, setState] = useState<ILayoutContextState>({
+    view: "grid",
+  });
 
-    return (
-        <LayoutContext.Provider value={{
-            state,
-            updateState
-        }}>
-            {children}
-        </LayoutContext.Provider>);
-}
+  const updateState = ({
+    key,
+    value,
+  }: {
+    key: keyof ILayoutContextState;
+    value: any;
+  }) => {
+    setState((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
 
-export default LayoutContextProvider
+  return (
+    <LayoutContext.Provider
+      value={{
+        state,
+        updateState,
+      }}
+    >
+      {children}
+    </LayoutContext.Provider>
+  );
+};
+
+export default LayoutContextProvider;
 
 export const useLayoutContext = () => {
+  const context = useContext(LayoutContext);
 
-    const context = useContext(LayoutContext);
-
-    if (context) return context;
-    else throw new Error('useLayoutContext must be wrapped in LayoutContextProvider!')
-}
+  if (context) return context;
+  else
+    throw new Error(
+      "useLayoutContext must be wrapped in LayoutContextProvider!"
+    );
+};

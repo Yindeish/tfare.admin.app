@@ -37,7 +37,7 @@ function Page() {
       <TicketGridView currentFilter={currentFilter} />
 
       {/* //!Modal */}
-      <Modal containerClassName="w-[35vw] h-fit p-0 rounded-[20px]" style={{}} />
+      <Modal containerClassName="w-[25vw] h-fit p-0 rounded-[20px]" style={{}} />
       {/* //!Modal */}
 
     </div>

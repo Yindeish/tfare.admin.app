@@ -3,7 +3,7 @@ import { permanentRedirect } from "next/navigation";
 
 function Page() {
 
-  permanentRedirect('/home') //uncomment to use effect. 
+  permanentRedirect('/home') 
 
 
   return (

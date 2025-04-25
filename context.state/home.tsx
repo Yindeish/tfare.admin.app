@@ -2,7 +2,12 @@
 import { createContext, FC, ReactNode, useContext, useState } from "react";
 
 // !Fetch State
-interface IDashboardContextFetchState { }
+interface IDashboardContextFetchState { 
+    fetchingEarnings: boolean,
+    fetchingRides: boolean,
+    fetchingTickets: boolean,
+    fetchingTrips: boolean,
+}
 // !Fetch State
 
 // !Local State
@@ -23,7 +28,7 @@ interface IHomeContext {
     state: IHomeContextState,
     handlers: {
         setLocalState: ({ key, value }: { key: keyof IDashboardContextLocalState, value: number | null }) => void,
-        setFetchState: ({ key, value }: { key: keyof IDashboardContextFetchState, value: number | null }) => void,
+        setFetchState: ({ key, value }: { key: keyof IDashboardContextFetchState, value: number | null | boolean }) => void,
     }
 }
 
@@ -32,18 +37,21 @@ const HomeContext = createContext<IHomeContext | undefined>(undefined)
 function HomeContextProvider({ children }: { children: ReactNode }) {
     const [state, updateState] = useState<IHomeContextState>({
         fetch: {
-
+            fetchingEarnings: false,
+            fetchingRides: false,
+            fetchingTickets: false,
+            fetchingTrips: false,
         },
 
         local: {
-            activeRides: null,
-            activeTrips: null,
-            pendingTickets: null,
-            totalEarnings: null
+            activeRides: 0,
+            activeTrips: 0,
+            pendingTickets: 0,
+            totalEarnings: 0
         }
     })
 
-    const setFetchState = ({ key, value }: { key: keyof IDashboardContextFetchState; value: number | null; }) => {
+    const setFetchState = ({ key, value }: { key: keyof IDashboardContextFetchState; value: number | null | boolean; }) => {
         updateState((prev) => ({
             ...prev,
             fetch: {

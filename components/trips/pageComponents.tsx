@@ -10,17 +10,14 @@ import StatusBadge from "../shared/status_badge";
 import { useTripContext } from "@/context.state/trip";
 import { Riders } from "@/public/icons/shared/sidebarSvgs";
 
-function RideGridView({ currentFilter }: { currentFilter: 'order' | 'user' }) {
-    const { state: layoutState, updateState } = useLayoutContext()
+function RideGridView() {
     const { showModal } = useModal()
     const { state, handlers } = useTripContext()
-
-    const arr = Array.from({ length: 20 });
 
     return (<div className="w-[85%] h-[calc(100%-74px)] mx-auto py-[1em] bg-f9f7f8 overflow-y-scroll">
 
         <div className="w-full h-fit grid grid-cols-3 gap-[1em]">
-            {arr.map((_, index) => (
+        {state.local.allTrips?.map((item: any, index) => (
                 <div
                     className="col-span-1 w-full h-[47vh] flex flex-col gap-[1em] rounded-[20px] p-[1.3em] border-[0.7px] border-FFAE02 bg-white" style={{ boxShadow: '0px 0px 10px 0px #00000010' }} key={index}>
 
@@ -40,7 +37,7 @@ function RideGridView({ currentFilter }: { currentFilter: 'order' | 'user' }) {
                     <span className="inline-flex gap-[0.3em] items-center w-full h-fit">
                         <LuClock3 className="text-27AE65 w-[16px] h-[16px]" />
 
-                        {currentFilter === 'order' ?
+                        {state.inputs.method === 'order' ?
                             (<span className="inline-flex items-center gap-[0.5em] font-normal text-[12px] text-747474">
                                 <span>Departure Date &Time:</span>
                                 <span className="">Apr 14 - 15:23</span>
@@ -52,7 +49,7 @@ function RideGridView({ currentFilter }: { currentFilter: 'order' | 'user' }) {
 
                     <KeyValueBlock
                         keyValueArray={
-                            currentFilter === 'order' ?
+                            state.inputs.method ?
                                 [
                                     { key: 'Driver Name', value: 'Folagbade Roman' },
                                     { key: 'Pickup', value: 'Ojoo Bus Stop' },
@@ -72,7 +69,7 @@ function RideGridView({ currentFilter }: { currentFilter: 'order' | 'user' }) {
                         valueClassName="font-normal text-[14px] text-black"
                     />
 
-                    {currentFilter === 'order' && (
+                    {state.inputs.method === 'order' && (
                         <div className="w-[50%] h-fit py-[0.5em] rounded-full border-[0.7px] border-d7d7d7 bg-white flex items-center justify-center gap-[16px]">
                             <Riders className="w-[18px] h-[15px] text-747474" />
 
@@ -92,13 +89,8 @@ function RowView() {
     const { showModal } = useModal()
     const { state, handlers } = useTripContext()
 
-    const [currentTab, setCurrentTab] = useState<'ongoing' | 'completed'>('ongoing');
-    const [currentFilter, setCurrentFilter] = useState<'order' | 'user'>('order');
-
     const activeSvgClassName = "w-[20px] h-[20px] text-5D5FEF";
     const inActiveSvgClassName = "w-[20px] h-[20px] text-black";
-
-    const arr = Array.from({ length: 20 });
 
     return (<div className="w-[97%] h-[calc(100%-74px)] flex flex-col gap-[1em] mx-auto py-[1em] bg-f9f7f8">
 
@@ -136,7 +128,7 @@ function RowView() {
         {/* //!Body */}
         <div className="w-full h-[calc(100%-70px)] flex flex-col gap-[0.3em] rounded-[20px] bg-white border-[0.7px] border-d7d7d7 overflow-y-scroll">
 
-            {arr.map((_, index) => (
+        {state.local.allTrips?.map((item: any, index) => (
                 <div className="w-full h-[50px] grid grid-cols-[1.2fr_2fr_2fr_2fr_1fr_0.7fr] gap-[10px] items-center py-[0.3em] px-[0.5em]" key={index}>
 
 

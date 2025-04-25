@@ -1,11 +1,13 @@
 'use client'
+import { useAuthContext } from "@/context.state/auth";
 import { DashboardGrid, Drivers, InAppBanners, LightGreyBgBus, LightGreyBgCar, Riders, Routes, Tickets, Transactions } from "@/public/icons/shared/sidebarSvgs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 
 function Sidebar() {
-    const path = usePathname()
+    const path = usePathname();
+    const {handlers} = useAuthContext();
 
     const active_link = (link: string) => path == link || link.includes(path);
     const svgInactiveClassName = "w-[20px] h-[20px] fill-white text-747474"
@@ -81,7 +83,7 @@ function Sidebar() {
             {/* //!Others, Routes, In-app Banner, Support Tickets, Transactions */}
 
             {/* //!Logout CTA */}
-            <div className="w-full h-fit flex items-center justify-center">
+            <div onClick={() => handlers.signout()} className="w-full h-fit flex items-center justify-center">
                 <span className="text-[16px] font-normal text-CF0707 pt-[1em] cursor-pointer">Logout</span>
             </div>
             {/* //!Logout CTA */}

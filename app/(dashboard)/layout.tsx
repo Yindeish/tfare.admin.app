@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "../globals.css";
 import BasePageGrid from "@/components/shared/base_page_grid";
 import LayoutContextProvider from "@/context.state/shared/layout";
 import { ModalProvider } from "@/context.state/shared/modal";
+import { Toaster } from "@/components/ui/toaster";
+import AuthContextProvider from "@/context.state/auth";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,15 +20,16 @@ export default function RootLayout({
     <html lang="en">
       <body
         // className={`font-ng_regular antialiased`}
-        className={`antialiased`}
+        className={`antialiased bg-white`}
       >
+        <Toaster />
+        <AuthContextProvider>
         <ModalProvider>
           <LayoutContextProvider>
-            <BasePageGrid>
-              {children}
-            </BasePageGrid>
+            <BasePageGrid>{children}</BasePageGrid>
           </LayoutContextProvider>
         </ModalProvider>
+        </AuthContextProvider>
       </body>
     </html>
   );
