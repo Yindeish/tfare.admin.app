@@ -1,6 +1,7 @@
 'use client'
 import { createContext, FC, ReactNode, useContext, useState } from "react";
-import { IBusStop, IPlan } from "./route";
+import { IBusStop, IPlan, IRoute } from "./route";
+import { IUser } from "./auth";
 
 
 // !Interfaces
@@ -13,9 +14,9 @@ interface IRideContextInputState {
 
 // !Local State
 interface IRideContextLocalState {
-    allRides: [],
-    newRides: [],
-    selectedRide: IRide | null,
+    allRides: ((ICurrentRide & IRide) & {route: IRoute, driver?: IUser, rider?: IUser, purchasedTickets?: number})[];
+    ridesDisplayList: ((ICurrentRide & IRide) & {route: IRoute, driver?: IUser, rider?: IUser, purchasedTickets?: number})[];
+    selectedRide: ((ICurrentRide & IRide) & {route: IRoute, driver?: IUser, rider?: IUser, purchasedTickets?: number}) | null;
 }
 // !Local State
 
@@ -55,6 +56,17 @@ export interface IRide {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface ICurrentRide {
+    _id: string;
+    driverId: string;
+    availableSeats: number;
+    vehicleName: string;
+    routeId: string;
+    ridersRides: IRide[];
+    createdAt: Date;
+    updatedAt: Date;
+}
 // !Individuals
 
 
@@ -80,7 +92,7 @@ function RideContextProvider({ children }: { children: ReactNode }) {
         },
         local: {
             allRides: [],
-            newRides: [],
+            ridesDisplayList: [],
             selectedRide: null
         }
     })

@@ -13,12 +13,14 @@ import {
   ByOrderRowView,
   ByUserRowView,
 } from "@/components/rides/pageComponents";
-import { IRideContextFetchState, useRideContext } from "@/context.state/ride";
+import { ICurrentRide, IRide, IRideContextFetchState, useRideContext } from "@/context.state/ride";
 import ApiService from "@/api/api.services";
+import { IUser } from "@/context.state/auth";
+import { IRoute } from "@/context.state/route";
 
 function Page() {
   const { state: layoutState, updateState } = useLayoutContext();
-  const { state, handlers } = useRideContext();
+  const { state: {inputs}, handlers } = useRideContext();
   const [currentTab, setCurrentTab] = useState<"ongoing" | "completed">(
     "ongoing"
   );
@@ -27,37 +29,29 @@ function Page() {
   const activeSvgClassName = "w-[20px] h-[20px] text-5D5FEF";
   const inActiveSvgClassName = "w-[20px] h-[20px] text-black";
 
-  const fetchData = async ({
-    loader,
+  const getRides = async ({
+    loader, method, status
   }: {
     loader: keyof IRideContextFetchState;
+    status: 'ongoing' | 'completed';
+    method: 'order' | 'user';
   }) => {
     handlers.setFetchState({ key: loader, value: true });
 
-    await ApiService.getWithBearerToken({ url: "/ride/ride/rides/all" })
+    await ApiService.getWithBearerToken({ url: `/user/ride/rides/all?method=${method}&status=${status}` })
       .then((data) => {
         handlers.setFetchState({ key: loader, value: false });
-        return data?.data;
+        const rides = (data?.allRides as (ICurrentRide & {route: IRoute, driver: IUser})[])
+        handlers.setLocalState({key: 'allRides', value: rides});
+        handlers.setLocalState({key: 'ridesDisplayList', value: rides});
       })
       .catch((err) => {});
   };
 
-  const getRides = async () => {
-    const data = await fetchData({loader: 'fetchingRides'});
-    // const data = Array.from({length: 20}).map((_, index) => ({
-    //   id: '#1234567XYZ',
-    //   time: '15:23',
-    //   driverName: 'Folagbade Roman',
-    //   pickup: 'Ojoo Bus Stop',
-    //   endpoint: 'Dugbe Bus Stop',
-    //   currentPassengers: index+1
-    // }));
-    handlers.setLocalState({key: 'allRides', value: data});
-  }
-
   useEffect(() => {
-    if(state.local.allRides.length == 0) getRides();
-  }, [])
+    // if(local.allRides?.length == 0) 
+      getRides({loader: 'fetchingRides', method: inputs.method, status: inputs.status});
+  }, [inputs.method, inputs.status])
 
   return (
     <div className="w-full h-full flex flex-col bg-f9f7f8">
@@ -71,7 +65,7 @@ function Page() {
               <div
                 onClick={() => handlers.setInputState({key: 'status', value: name})}
                 className={`w-fit h-full border-b-[4px] flex items-center justify-center ${
-                  state.inputs.status == name
+                  inputs.status == name
                     ? "border-b-5D5FEF text-5D5FEF"
                     : "border-b-transparent text-747474 cursor-pointer"
                 }`}
@@ -89,11 +83,11 @@ function Page() {
               <div
                 onClick={() => handlers.setInputState({key: 'method', value: name})}
                 className={`w-fit h-fit flex items-center justify-center my-auto border-l-[1px] pl-[0.5em] ml-[1em] ${
-                  state.inputs.method === name
+                  inputs.method === name
                     ? "border-l-d7d7d7"
                     : "border-l-transparent"
                 } ${
-                  state.inputs.method === name
+                  inputs.method === name
                     ? " text-5D5FEF"
                     : "text-747474 cursor-pointer"
                 }`}

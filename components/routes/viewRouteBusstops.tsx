@@ -55,7 +55,7 @@ const ViewRouteBusstops = () => {
           <div className="w-full flex flex-col gap-2 ">
             {/* City Name and Collapse Btn */}
             <div className="flex justify-between items-center border-[#D7D7D7] border-b-[0.7px]">
-              <span className="text-black font-black text-[22px]">Ibadan</span>
+              <span className="text-black font-black text-[22px]">{currentRoute?.city?.name}</span>
 
               <span className="w-[16px] h-[10px]">
                 <ChevronTop />
@@ -64,7 +64,7 @@ const ViewRouteBusstops = () => {
             {/* City Name and Collapse Btn */}
 
             {/* Route Items */}
-            {[1, 1, 1, 1, 1].map((route, index) => (
+            {currentRoute?.inTripDropoffs?.map((busstop, index) => (
               <div
                 className="flex justify-between items-center py-1 border-[#D7D7D7] border-b-[0.7px]"
                 key={index}
@@ -72,13 +72,13 @@ const ViewRouteBusstops = () => {
                 <div className="flex flex-col justify-center gap-1.5 w-fit h-fit">
                   {/* Startoff */}
                   <div className="col-span-1 text-black font-medium text-[14px]">
-                    Ojoo Bus Stop
+                    {busstop?.name}
                   </div>
                   {/* Startoff */}
 
                   {/* Dropoff */}
                   <div className="text-[#747474] font-normal text-[12px]">
-                  Ibadan, Oyo State
+                  {`${busstop?.city?.name}, ${busstop?.city?.stateName}`}
                   </div>
                   {/* Dropoff */}
                 </div>

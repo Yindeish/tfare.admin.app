@@ -96,7 +96,7 @@ function Route() {
       )}
 
        {/* //!Modal */}
-       <Modal containerClassName="w-[30em] h-fit min-h-[15em] max-h-[90vh] top-[5vh] p-0 rounded-tl-[0px] rounded-tr-[0px] overflow-hidden cursor-default" containerStyle={{ padding: 0 }} />
+       <Modal containerClassName="w-[30em] max-w-[30em] h-fit min-h-[15em] max-h-[90vh] top-[5vh] p-0 rounded-tl-[0px] rounded-tr-[0px] overflow-hidden cursor-default" containerStyle={{ padding: 0 }} />
       {/* //!Modal */}
     </div>
   );

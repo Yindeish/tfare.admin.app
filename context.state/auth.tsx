@@ -125,7 +125,8 @@ interface IRider {
   notification: IRiderNotification;
 }
 
-interface IUser {
+export interface IUser {
+  _id: string;
   email: string;
   address: string;
   profileName: string;

@@ -4,14 +4,15 @@ import SelectInputTile from "./selectInput";
 import PlusInCircle from "./svgs/plusInCircle";
 import { number, ObjectSchema, string } from "yup";
 import { Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Checkbox from "./checkbox";
-import { useRouteContext } from "@/context.state/route";
+import { IBusStop, IRouteContextFetchState, useRouteContext } from "@/context.state/route";
 import { useModal } from "@/context.state/shared/modal";
 import NewCityModal from "./newCityModal";
+import ApiService from "@/api/api.services";
 
 const CreateStartDropoffPaymentOptions = () => {
-  const { state, handlers } = useRouteContext();
+  const { state: {fetch, inputs, local}, handlers } = useRouteContext();
   const {
     values,
     errors,
@@ -31,11 +32,32 @@ const CreateStartDropoffPaymentOptions = () => {
       cityName: "",
       startOffName: "",
       dropoffName: "",
-      driverCommission: state.inputs.driverCommission,
+      driverCommission: inputs.driverCommission,
     },
     onSubmit: (values) => {},
   });
   const { showModal } = useModal();
+
+  const getAllBusstops = async ({
+    loader
+  }: {
+    loader: keyof IRouteContextFetchState;
+  }) => {
+    handlers.setFetchState({ key: loader, value: true });
+
+    await ApiService.getWithBearerToken({ url: `/user/ride/busstops/all` })
+      .then((data) => {
+        handlers.setFetchState({ key: loader, value: false });
+        const allBusstops = (data?.allBusstops as IBusStop[])
+        handlers.setLocalState({key: 'allBusstops', value: allBusstops});
+      })
+      .catch((err) => {});
+  };
+
+  useEffect(() => {
+    if(local.allBusstops?.length == 0) 
+      getAllBusstops({loader: 'fetchingBusstops' });
+  }, [])
 
 
   return (
@@ -72,14 +94,15 @@ const CreateStartDropoffPaymentOptions = () => {
             {
               label: "City",
               placeholder: "Select City",
-              dropdownList: ["Lagos", "Abuja", "Ilorin"],
+              dropdownList: local.allCities?.map((city) => ({id: city?._id,name: city?.name})),
               onSelect: (val: string) => {
                 setFieldValue("cityName", val);
 
-                const city = state.local.allCities.find(
-                  (city) => city?.name.toLowerCase() === val.toLowerCase()
+                const city = local.allCities.find(
+                  (city) => city?._id === val
                 );
   
+                // setFieldValue("cityName", city?.name);
                 handlers.setInputState({ key: "city", value: city });
               },
               error: errors.cityName,
@@ -89,14 +112,15 @@ const CreateStartDropoffPaymentOptions = () => {
             {
               label: "Startoff Bus Stop",
               placeholder: "Select Bus Stop",
-              dropdownList: ["Ikate", "Lekki", "Oshodi"],
+              dropdownList: local.allBusstops?.map((busstop) => ({id: busstop?._id, name: busstop?.name})),
               onSelect: (val: string) => {
                 setFieldValue("startOffName", val);
 
-                const busstop = state.local.allBusstops.find(
-                  (busstop) => busstop?.name.toLowerCase() === val.toLowerCase()
+                const busstop = local.allBusstops.find(
+                  (busstop) => busstop?._id === val
                 );
   
+                // setFieldValue("cityName", busstop?.name);
                 handlers.setInputState({ key: "pickupBusstop", value: busstop });
               },
               error: errors.startOffName,
@@ -106,14 +130,15 @@ const CreateStartDropoffPaymentOptions = () => {
             {
               label: "Endpoint Bus Stop",
               placeholder: "Select Bus Stop",
-              dropdownList: ["Ikate", "Lekki", "Oshodi"],
+              dropdownList: local.allBusstops?.map((busstop) => ({id: busstop?._id, name: busstop?.name})),
               onSelect: (val: string) => {
                 setFieldValue("dropoffName", val);
 
-                const busstop = state.local.allBusstops.find(
-                  (busstop) => busstop?.name.toLowerCase() === val.toLowerCase()
+                const busstop = local.allBusstops.find(
+                  (busstop) => busstop?._id === val
                 );
   
+                // setFieldValue("dropoffName", busstop?.name);
                 handlers.setInputState({ key: "dropoffBusstop", value: busstop });
               },
               error: errors.dropoffName,
@@ -139,9 +164,9 @@ const CreateStartDropoffPaymentOptions = () => {
                   children: label,
                 }}
                 select={{
-                  list: dropdownList.map((item) => ({
-                    textContent: item,
-                    value: item,
+                  list: dropdownList?.map((item) => ({
+                    textContent: item?.name,
+                    value: String(item?.id),
                   })),
                   trigger: {
                     error,
@@ -172,7 +197,7 @@ const CreateStartDropoffPaymentOptions = () => {
             { label: "Pay Online", value: "online" },
           ].map(({ label, value }, index) => {
             const optionChecked =
-              state.inputs.selectedPaymentOptions.includes(value);
+              inputs.selectedPaymentOptions.includes(value);
 
             return (
               <div className="flex justify-between" key={index}>
@@ -185,7 +210,7 @@ const CreateStartDropoffPaymentOptions = () => {
                       if (optionChecked) {
                         handlers.setInputState({
                           key: "selectedPaymentOptions",
-                          value: state.inputs.selectedPaymentOptions.filter(
+                          value: inputs.selectedPaymentOptions.filter(
                             (item) => item !== value
                           ),
                         });
@@ -193,7 +218,7 @@ const CreateStartDropoffPaymentOptions = () => {
                         handlers.setInputState({
                           key: "selectedPaymentOptions",
                           value: [
-                            ...state.inputs.selectedPaymentOptions,
+                            ...inputs.selectedPaymentOptions,
                             value,
                           ],
                         });

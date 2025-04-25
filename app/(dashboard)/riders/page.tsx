@@ -1,4 +1,5 @@
 'use client'
+import ApiService from "@/api/api.services";
 import RiderModal from "@/components/riders/modalComponents";
 import KeyValueBlock from "@/components/shared/key_value_block";
 import Modal from "@/components/shared/modal";
@@ -6,23 +7,43 @@ import StatusBadge from "@/components/shared/status_badge";
 import SubHeader from "@/components/shared/sub_header";
 import { GridViewCTA, RowViewCTA, SortCTA } from "@/components/shared/sub_header_components";
 import shared_images from "@/constants/images/shared";
-import { useRiderContext } from "@/context.state/rider";
+import { IUser } from "@/context.state/auth";
+import { IRidersContextFetchState, useRiderContext } from "@/context.state/rider";
 import { useLayoutContext } from "@/context.state/shared/layout";
 import { useModal } from "@/context.state/shared/modal";
 import { Expand } from "@/public/icons/homeSvgs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 function Page() {
   const [currentTab, setCurrentTab] = useState<'all' | 'new'>('all')
   const { state: layoutState, updateState } = useLayoutContext()
   const { showModal } = useModal()
-  const { state, handlers } = useRiderContext()
+  const { state: {inputs, local}, handlers } = useRiderContext()
 
   const activeSvgClassName = "w-[20px] h-[20px] text-5D5FEF";
   const inActiveSvgClassName = "w-[20px] h-[20px] text-black";
 
-  const arr = Array.from({ length: 10 });
+  const getRiders = async ({
+    loader,
+  }: {
+    loader: keyof IRidersContextFetchState;
+  }) => {
+    handlers.setFetchState({ key: loader, value: true });
+
+    await ApiService.getWithBearerToken({ url: `/user/rider/riders/all` })
+      .then((data) => {
+        handlers.setFetchState({ key: loader, value: false });
+        const trips = data?.allRiders as IUser[];
+        handlers.setLocalState({key: 'allRiders', value: trips});
+      })
+      .catch((err) => {});
+  };
+
+  useEffect(() => {
+    // if(local.allTrips?.length == 0) 
+      getRiders({loader: 'fetchingRiders'});
+  }, [])
 
   return (
     <div className="w-full h-full flex flex-col bg-f9f7f8">
@@ -61,16 +82,16 @@ function Page() {
         (<div className="w-[85%] h-[calc(100%-74px)] mx-auto py-[1em] bg-f9f7f8 overflow-y-scroll">
 
           <div className="w-full h-fit grid grid-cols-3 gap-[1em]">
-            {arr.map((_, index) => (
+            {local.allRiders?.map((rider, index) => (
               <div
                 className="col-span-1 w-full h-[42vh] flex flex-col gap-[1em] rounded-[20px] p-[1.3em] bg-white" style={{ boxShadow: '0px 0px 10px 0px #00000010' }} key={index}>
 
                 <div className="w-full h-fit flex items-start justify-between">
-                  <img className="w-[50px] h-[50px] rounded-full" src={shared_images.user_profile_image.src} alt="" />
+                  <img className="w-[50px] h-[50px] rounded-full" src={rider?.picture || rider?.avatar} alt="" />
 
                   <div className="w-[70%] flex flex-col gap-[12px]">
-                    <span className="font-medium text-[14px] text-black">Shade Shobowale</span>
-                    <span className="font-normal text-[12px] text-747474">#153710YUW</span>
+                    <span className="font-medium text-[14px] text-black">{rider?.fullName}</span>
+                    <span className="font-normal text-[12px] text-747474">#{rider?._id?.slice(0, 10)}{'..'}</span>
                   </div>
 
                   <Expand onClick={() => {
@@ -85,9 +106,10 @@ function Page() {
 
                 <KeyValueBlock
                   keyValueArray={[
-                    { key: 'Phone Number', value: '+234 561 614 7153' },
-                    { key: 'Email Address', value: 'speter@gmail.com' },
-                    { key: 'Wallet balance', value: '₦ 500.00' },
+                    { key: 'Phone Number', value: rider?.phoneNumber?.toString() },
+                    { key: 'Email Address', value: rider?.email },
+                    // { key: 'Wallet balance', value: `₦ ${rider?.walletBalance}` },
+                    { key: 'Wallet balance', value: `₦ -` },
                   ]}
                   containerClassName="gap-[0.75em] pb-[1em] border-b-[0.7px] border-b-d7d7d7"
                   keyClassName="font-normal text-[14px] text-747474"
@@ -147,16 +169,16 @@ function Page() {
           {/* //!Body */}
           <div className="w-full h-[calc(100%-70px)] flex flex-col gap-[0.3em] rounded-[20px] bg-white border-[0.7px] border-d7d7d7 overflow-y-scroll">
 
-            {arr.map((_, index) => (
+            {local.allRiders?.map((rider, index) => (
               <div className="w-full h-[50px] grid grid-cols-[6fr_6fr_3fr_3fr_2fr] gap-[10px] items-center py-[0.3em] px-[0.5em]" key={index}>
                 {/* //!User Avatar,Username,User ID, Expand CTA */}
                 <div className="col-span-1 w-full h-fit flex items-center gap-[0.5em]">
-                  <img className="w-[50px] h-[50px] rounded-full" src={shared_images.user_profile_image.src} alt="" />
+                  <img className="w-[50px] h-[50px] rounded-full" src={rider?.picture || rider?.avatar} alt="" />
 
                   <div className="w-[75%] h-fit flex flex-col gap-[12px]">
-                    <span className="font-medium text-[14px] text-black">Shade Shobowale</span>
+                    <span className="font-medium text-[14px] text-black">{rider?.fullName}</span>
 
-                    <span className="font-medium text-[12px] text-747474">#153710YUW</span>
+                    <span className="font-medium text-[12px] text-747474">#{`${rider?._id?.slice(0, 10)}..`}</span>
                   </div>
 
                   <Expand onClick={() => {
@@ -166,15 +188,15 @@ function Page() {
                 {/* //!User Avatar,Username,User ID, Expand CTA */}
 
                 {/* //!Email Address */}
-                <div className="col-span-1 w-full h-fit font-medium text-[14px] text-black">shadeshobowale@gmail.c...</div>
+                <div className="col-span-1 w-full h-fit font-medium text-[14px] text-black">{rider?.email}</div>
                 {/* //!Email Address */}
 
                 {/* //!Phone Number */}
-                <div className="col-span-1 w-full h-fit font-medium text-[14px] text-black">+234 561 614 7153</div>
+                <div className="col-span-1 w-full h-fit font-medium text-[14px] text-black">{rider?.phoneNumber?.toString()}</div>
                 {/* //!Phone Number */}
 
                 {/* //!Wallet Balance*/}
-                <div className="col-span-1 w-full h-fit font-medium text-[14px] text-black">₦ 7120.00</div>
+                <div className="col-span-1 w-full h-fit font-medium text-[14px] text-black">₦ {'-'}</div>
                 {/* //!Wallet Balance*/}
 
                 {/* //!Status*/}

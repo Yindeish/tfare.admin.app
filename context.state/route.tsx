@@ -36,10 +36,18 @@ interface IRouteContextLocalState {
 }
 // !Local State
 
+// !Fetch
+export interface IRouteContextFetchState {
+  fetchingRoutes: boolean,
+  fetchingCities: boolean,
+  fetchingBusstops: boolean,
+}
+// !Fetch
+
 interface IRouteContextState {
   inputs: IRouteContextInputState;
   local: IRouteContextLocalState;
-  fetch: {};
+  fetch: IRouteContextFetchState;
 }
 
 // !Individuals
@@ -127,7 +135,7 @@ interface IRouteContext {
       key,
       value,
     }: {
-      key: keyof IRouteContextInputState;
+      key: keyof IRouteContextFetchState;
       value: any;
     }) => void;
   };
@@ -137,7 +145,11 @@ const RouteContext = createContext<IRouteContext | undefined>(undefined);
 
 function RouteContextProvider({ children }: { children: ReactNode }) {
   const [state, updateState] = useState<IRouteContextState>({
-    fetch: {},
+    fetch: {
+      fetchingRoutes: false,
+      fetchingBusstops: false,
+      fetchingCities: false,
+    },
     inputs: {
       searchText: "",
       selectedBusstops: [],
@@ -168,7 +180,22 @@ function RouteContextProvider({ children }: { children: ReactNode }) {
     },
   });
 
-  const setFetchState = () => {};
+  const setFetchState = ({
+    key,
+    value,
+  }: {
+    key: keyof IRouteContextFetchState;
+    value: any;
+  }) => {
+    updateState((prevState) => ({
+      ...prevState,
+      fetch: {
+        ...prevState.fetch,
+        [key]: value,
+      },
+    }));
+  };
+
   const setInputState = ({
     key,
     value,
@@ -184,6 +211,7 @@ function RouteContextProvider({ children }: { children: ReactNode }) {
       },
     }));
   };
+
   const setLocalState = ({
     key,
     value,

@@ -228,7 +228,7 @@ const SelectDropoffs = () => {
               onChange={({target:{value}}) => {
                 handlers.setInputState({key: 'searchText', value});
 
-                const matchBusstops = state.local.allBusstops.filter((busstop) => busstop?.name.toLowerCase()?.includes(value?.toLowerCase()));
+                const matchBusstops = state.local.allBusstops?.filter((busstop) => busstop?.name.toLowerCase()?.includes(value?.toLowerCase()));
 
                 handlers.setLocalState({key: 'matchBusstops', value: matchBusstops});
               }}
@@ -245,7 +245,7 @@ const SelectDropoffs = () => {
         {/* Dropoff select tiles */}
         <div className="flex-1 max-h-[15em] flex-col overflow-y-scroll">
           {state.local.matchBusstops
-            .map((dropoff, index) => (
+            ?.map((dropoff, index) => (
               <SelectDropoffTile dropoff={dropoff} key={index} />
             ))}
         </div>
