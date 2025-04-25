@@ -44,7 +44,7 @@ const SelectInputTile = ({
           <SelectValue placeholder={placeholder || "Select"} />
         </SelectTrigger>
         <SelectContent>
-          {list.map(({ textContent, value }, index) => (
+          {list?.map(({ textContent, value }, index) => (
             <SelectItem className="capitalize" value={value} key={index}>
               {textContent}
             </SelectItem>

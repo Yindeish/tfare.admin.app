@@ -5,13 +5,17 @@ import ChevronTop from "./svgs/chevronTop";
 import Startoff from "./svgs/startoff";
 import { ToggleBtn } from "../drivers/modalComponents";
 import CupertinoBtn from "./cupertinoBtn";
+import { ICity, useRouteContext } from "@/context.state/route";
 
-const PresetRouteTile = () => {
+const PresetRouteTile = ({city}: {city: ICity}) => {
+  const {state: {fetch, inputs, local}, handlers} = useRouteContext();
+  const presetRoutes = local.allPresetRoutes.filter((route) => route?.city?._id == city?._id);
+
   return (
     <div className="w-full flex flex-col gap-2 ">
       {/* City Name and Collapse Btn */}
       <div className="flex justify-between items-center border-[#D7D7D7] border-b-[0.7px]">
-        <span className="text-black font-black text-[22px]">Ibadan</span>
+        <span className="text-black font-black text-[22px] capitalize">{city?.name}</span>
 
         <span className="w-[16px] h-[10px]">
           <ChevronTop />
@@ -20,20 +24,20 @@ const PresetRouteTile = () => {
       {/* City Name and Collapse Btn */}
 
       {/* Route Items */}
-      {[1,1,1,1,1].map((route, index) => (
+      {presetRoutes?.map((route, index) => (
         <div
           className="grid grid-cols-3 gap-1 justify-between items-center py-1 border-[#D7D7D7] border-b-[0.7px]"
           key={index}
         >
           {/* Startoff */}
           <div className="col-span-1 text-black font-medium text-[14px]">
-            Ojoo Bus Stop
+            {route?.pickupBusstop?.name}
           </div>
           {/* Startoff */}
 
           {/* Dropoff */}
           <div className="col-span-1 text-black font-medium text-[14px]">
-            Dugbe Bus Stop
+            {route?.dropoffBusstop?.name}
           </div>
           {/* Dropoff */}
 
@@ -52,7 +56,7 @@ const PresetRouteTile = () => {
             sliderProps={{
                 className: ``
             }}
-            on={true}
+            on={route?.active}
              />
           </div>
           {/* Expand Status */}

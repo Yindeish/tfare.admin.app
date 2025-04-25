@@ -2,6 +2,7 @@
 import { createContext, FC, ReactNode, useContext, useState } from "react";
 import { IRide } from "./ride";
 import { IRoute } from "./route";
+import { IUser } from "./auth";
 
 // !Interfaces
 // !Input State
@@ -13,9 +14,9 @@ interface ITripContextInputState {
 
 // !Local State
 interface ITripContextLocalState {
-  allTrips: [];
-  newTrips: [];
-  selectedTrip: ITrip | null;
+  allTrips: ((ICurrentTrip & IRide) & {route: IRoute, driver?: IUser, rider?: IUser, purchasedTickets?: number})[];
+  tripsDisplayList: ((ICurrentTrip & IRide) & {route: IRoute, driver?: IUser, rider?: IUser, purchasedTickets?: number})[];
+  selectedTrip: ((ICurrentTrip & IRide) & {route: IRoute, driver?: IUser, rider?: IUser, purchasedTickets?: number}) | null;
 }
 // !Local State
 
@@ -32,7 +33,7 @@ interface ITripContextState {
 }
 
 // !Individuals
-export interface ITrip {
+export interface ICurrentTrip {
   _id: string;
   driverId: string;
   driverName?: string;
@@ -87,7 +88,7 @@ function TripContextProvider({ children }: { children: ReactNode }) {
     },
     local: {
       allTrips: [],
-      newTrips: [],
+      tripsDisplayList: [],
       selectedTrip: null,
     },
   });

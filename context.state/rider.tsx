@@ -1,5 +1,6 @@
 'use client'
 import { createContext, FC, ReactNode, useContext, useState } from "react";
+import { IUser } from "./auth";
 
 
 // !Interfaces
@@ -11,16 +12,22 @@ interface IRidersContextInputState {
 
 // !Local State
 interface IRidersContextLocalState {
-    allRiders: [],
-    newRiders: [],
+    allRiders: IUser[],
+    newRiders: IUser[],
     selectedRider: Rider | null,
 }
 // !Local State
 
+// !Fetch State
+export interface IRidersContextFetchState {
+    fetchingRiders: boolean;
+}
+// !Fetch State
+
 interface IRiderContextState {
     inputs: IRidersContextInputState,
     local: IRidersContextLocalState,
-    fetch: {},
+    fetch: IRidersContextFetchState,
 }
 
 // !Individuals
@@ -35,7 +42,7 @@ interface IRiderContext {
     handlers: {
         setInputState: ({ key, value }: { key: keyof IRidersContextInputState, value: any }) => void,
         setLocalState: ({ key, value }: { key: keyof IRidersContextLocalState, value: any }) => void,
-        setFetchState: ({ key, value }: { key: keyof IRidersContextInputState, value: any }) => void,
+        setFetchState: ({ key, value }: { key: keyof IRidersContextFetchState, value: any }) => void,
     }
 }
 
@@ -44,7 +51,7 @@ const RiderContext = createContext<IRiderContext | undefined>(undefined)
 function RiderContextProvider({ children }: { children: ReactNode }) {
     const [state, updateState] = useState<IRiderContextState>({
         fetch: {
-
+            fetchingRiders: false,
         },
         inputs: {
 
@@ -56,9 +63,51 @@ function RiderContextProvider({ children }: { children: ReactNode }) {
         }
     })
 
-    const setFetchState = () => { }
-    const setInputState = () => { }
-    const setLocalState = () => { }
+    const setFetchState = ({
+        key,
+        value,
+      }: {
+        key: keyof IRidersContextFetchState;
+        value: boolean;
+      }) => { 
+         updateState((prev) => ({
+      ...prev,
+      fetch: {
+        ...prev.fetch,
+        [key]: value,
+      },
+    }));
+    }
+    const setInputState = ({
+    key,
+    value,
+  }: {
+    key: keyof IRidersContextInputState;
+    value: boolean;
+  }) => { 
+         updateState((prev) => ({
+      ...prev,
+      inputs: {
+        ...prev.inputs,
+        [key]: value,
+      },
+    }));
+    }
+    const setLocalState = ({
+    key,
+    value,
+  }: {
+    key: keyof IRidersContextLocalState;
+    value: boolean;
+  }) => { 
+         updateState((prev) => ({
+      ...prev,
+      local: {
+        ...prev.local,
+        [key]: value,
+      },
+    }));
+    }
 
     return (
         <RiderContext.Provider value={{

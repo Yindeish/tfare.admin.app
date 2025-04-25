@@ -1,13 +1,39 @@
-import { useRouteContext } from "@/context.state/route";
+"use client";
+
+import { ICity, IRouteContextFetchState, useRouteContext } from "@/context.state/route";
 import { CTABtn } from "./ctaBtn";
 import PresetRouteTile from "./presetRouteTile";
 import PlusInCircle from "./svgs/plusInCircle";
 import Settings from "./svgs/settings";
 import Startoff from "./svgs/startoff";
+import { useEffect } from "react";
+import ApiService from "@/api/api.services";
 
 const ViewPresetRoutes = () => {
 
-  const {handlers} = useRouteContext()
+  const {state: {local},handlers} = useRouteContext();
+
+  const getAllCities = async ({
+    loader
+  }: {
+    loader: keyof IRouteContextFetchState;
+  }) => {
+    handlers.setFetchState({ key: loader, value: true });
+
+    await ApiService.getWithBearerToken({ url: `/user/ride/cities/all` })
+      .then((data) => {
+        handlers.setFetchState({ key: loader, value: false });
+        const allCities = (data?.allCities as ICity[])
+        handlers.setLocalState({key: 'allCities', value: allCities});
+        handlers.setLocalState({key: 'currentRoute', value: local.allPresetRoutes[0]});
+      })
+      .catch((err) => {});
+  };
+
+  useEffect(() => {
+    if(local.allCities?.length == 0) 
+      getAllCities({loader: 'fetchingCities' });
+  }, [])
 
   return (
     <div className="w-full h-full flex flex-col gap-2">
@@ -78,8 +104,8 @@ const ViewPresetRoutes = () => {
         {/* Body */}
         <div className="flex flex-col gap-1 px-[2em] flex-1 max-h-[28em] overflow-y-scroll">
             {/* Routes in cities -- fetching by cities (Groupong them by cities) */}
-          {[1,1,1,1].map((route, index) => (
-            <PresetRouteTile key={index} />
+          {local.allCities?.map((city, index) => (
+            <PresetRouteTile city={city} key={index} />
           ))}{/* Routes in cities -- fetching by cities (Groupong them by cities) */}
         </div>
         {/* Body */}

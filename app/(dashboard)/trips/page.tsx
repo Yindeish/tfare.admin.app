@@ -5,8 +5,10 @@ import { GridViewCTA, RowViewCTA, SortCTA } from "@/components/shared/sub_header
 import { useLayoutContext } from "@/context.state/shared/layout";
 import { useEffect, useState } from "react";
 import { RideGridView, RowView } from "@/components/trips/pageComponents";
-import { ITrip, ITripContextFetchState, useTripContext } from "@/context.state/trip";
+import { ICurrentTrip, ITripContextFetchState, useTripContext } from "@/context.state/trip";
 import ApiService from "@/api/api.services";
+import { IRoute } from "@/context.state/route";
+import { IUser } from "@/context.state/auth";
 
 
 function Page() {
@@ -17,34 +19,28 @@ function Page() {
   const inActiveSvgClassName = "w-[20px] h-[20px] text-black";
 
   const getTrips = async ({
-    loader,
+    loader, method, status
   }: {
     loader: keyof ITripContextFetchState;
+    status: 'ongoing' | 'completed';
+    method: 'order' | 'user';
   }) => {
     handlers.setFetchState({ key: loader, value: true });
 
-    await ApiService.getWithBearerToken({ url: "/trip/trip/trips/all" })
+    await ApiService.getWithBearerToken({ url: `/user/trip/trips/all?method=${method}&status=${status}` })
       .then((data) => {
         handlers.setFetchState({ key: loader, value: false });
-        const trips = (data?.driversTrips as ITrip[])?.map((trip) => {
-          return {
-            id: trip?._id,
-            time: trip?.departureTime,
-            driverName: trip?.driverName,
-            pickup: trip?.route?.pickupBusstop,
-            endpoint: trip?.route?.dropoffBusstop,
-            currentPassengers: trip?.ridersRides?.length,
-          }
-        })
-        console.log({trips}, 'data', data);
+        const trips = (data?.allTrips as (ICurrentTrip & {route: IRoute, driver: IUser})[])
         handlers.setLocalState({key: 'allTrips', value: trips});
+        handlers.setLocalState({key: 'tripsDisplayList', value: trips});
       })
       .catch((err) => {});
   };
 
   useEffect(() => {
-    if(local.allTrips.length == 0) getTrips({loader: 'fetchingRides'});
-  }, [])
+    // if(local.allTrips?.length == 0) 
+      getTrips({loader: 'fetchingRides', method: inputs.method, status: inputs.status});
+  }, [inputs.method, inputs.status])
 
 
   return (
