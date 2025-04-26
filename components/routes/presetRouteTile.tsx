@@ -6,16 +6,24 @@ import Startoff from "./svgs/startoff";
 import { ToggleBtn } from "../drivers/modalComponents";
 import CupertinoBtn from "./cupertinoBtn";
 import { ICity, useRouteContext } from "@/context.state/route";
+import { VscLoading } from "react-icons/vsc";
 
-const PresetRouteTile = ({city}: {city: ICity}) => {
-  const {state: {fetch, inputs, local}, handlers} = useRouteContext();
-  const presetRoutes = local.allPresetRoutes.filter((route) => route?.city?._id == city?._id);
+const PresetRouteTile = ({ city }: { city: ICity }) => {
+  const {
+    state: { fetch, inputs, local },
+    handlers,
+  } = useRouteContext();
+  const presetRoutes = local.allPresetRoutes.filter(
+    (route) => route?.city?._id == city?._id
+  );
 
   return (
     <div className="w-full flex flex-col gap-2 ">
       {/* City Name and Collapse Btn */}
       <div className="flex justify-between items-center border-[#D7D7D7] border-b-[0.7px]">
-        <span className="text-black font-black text-[22px] capitalize">{city?.name}</span>
+        <span className="text-black font-black text-[22px] capitalize">
+          {city?.name}
+        </span>
 
         <span className="w-[16px] h-[10px]">
           <ChevronTop />
@@ -24,7 +32,7 @@ const PresetRouteTile = ({city}: {city: ICity}) => {
       {/* City Name and Collapse Btn */}
 
       {/* Route Items */}
-      {presetRoutes?.map((route, index) => (
+      {!fetch.fetchingRoutes && presetRoutes?.map((route, index) => (
         <div
           className="grid grid-cols-3 gap-1 justify-between items-center py-1 border-[#D7D7D7] border-b-[0.7px]"
           key={index}
@@ -43,21 +51,21 @@ const PresetRouteTile = ({city}: {city: ICity}) => {
 
           {/* Expand Status */}
           <div className="col-span-1 w-fit justify-self-end flex items-center justify-end gap-7">
-            <span className="w-[18px] h-[18px]">
+            <span onClick={() => handlers.setLocalState({key: 'currentRoute', value: route})} className="w-[18px] h-[18px] cursor-pointer">
               <Expand className="w-[18px] h-[18px]" />
             </span>
 
             {/* <ToggleBtn onClick={() => {}} className="sticky top-[unset] left-[unset] " on={true} /> */}
-            <CupertinoBtn 
-            indicatorProps={{
+            <CupertinoBtn
+              indicatorProps={{
                 className: `border-[1px] border-[27AE65]`,
-                onClick: () => {}
-            }}
-            sliderProps={{
-                className: ``
-            }}
-            on={route?.active}
-             />
+                onClick: () => {},
+              }}
+              sliderProps={{
+                className: ``,
+              }}
+              on={route?.active}
+            />
           </div>
           {/* Expand Status */}
         </div>

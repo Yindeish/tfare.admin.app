@@ -52,78 +52,16 @@ const SelectDropoffs = () => {
   };
 
   const proceed = () => {
-    if(state.inputs.selectedBusstops.length == 0) return;
+    if(state.inputs.selectedBusstops.length == 0 || (
+      !state.inputs.city
+      || !state.inputs.pickupBusstop
+      || !state.inputs.dropoffBusstop
+      || !state.inputs.driverCommission
+      || state.inputs.selectedPaymentOptions.length == 0
+    )) return;
     handlers.setLocalState({key: 'routeCreationStage', value: 'final'});
     switchToStage({path, stage: state.local.routeCreationStage as 'final'});
   }
-
-
-  useEffect(() => {
-    const allBusstops = [
-      {
-        city: {
-          _id: '6656589',
-          name: 'yaba',
-          stateName: 'lagos'
-        },
-        name: 'lekki',
-        order: 1,
-        _id: '9865790'
-      },
-      {
-        city: {
-          _id: '6656589',
-          name: 'yaba',
-          stateName: 'lagos'
-        },
-        name: 'ajah',
-        order: 2,
-        _id: '9865790'
-      },
-      {
-        city: {
-          _id: '6656589',
-          name: 'yaba',
-          stateName: 'lagos'
-        },
-        name: 'ikate',
-        order: 3,
-        _id: '9865790'
-      },
-      {
-        city: {
-          _id: '6656589',
-          name: 'yaba',
-          stateName: 'lagos'
-        },
-        name: 'oshodi',
-        order: 4,
-        _id: '9865790'
-      },
-      {
-        city: {
-          _id: '6656589',
-          name: 'yaba',
-          stateName: 'lagos'
-        },
-        name: 'yaba',
-        order: 5,
-        _id: '9865790'
-      },
-      {
-        city: {
-          _id: '6656589',
-          name: 'yaba',
-          stateName: 'lagos'
-        },
-        name: 'ojodu',
-        order: 6,
-        _id: '9865790'
-      },
-    ].map((item, index) => ({...item, number: index+1}));
-    handlers.setLocalState({key: 'allBusstops', value: allBusstops });
-    handlers.setLocalState({key: 'matchBusstops', value: allBusstops });
-  }, []) //testing
 
   return (
     <div className="w-full h-full flex flex-col gap-2 justify-between">
@@ -273,7 +211,12 @@ const SelectDropoffs = () => {
         props={{
           children: "Proceed",
           onClick: proceed,
-          className: `${state.inputs.selectedBusstops.length == 0 ? 'opacity-[0.5] cursor-not-allowed' : ''}`
+          className: `${(state.inputs.selectedBusstops.length == 0) || ((
+            !state.inputs.city
+            || !state.inputs.pickupBusstop
+            || !state.inputs.dropoffBusstop
+            || !state.inputs.driverCommission
+            || state.inputs.selectedPaymentOptions.length == 0)) ? 'opacity-[0.5] cursor-not-allowed' : ''}`
         }}
       />
       {/* Proceed Btn */}

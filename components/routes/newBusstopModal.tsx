@@ -58,9 +58,9 @@ const NewBusstopModal = () => {
           children: "City",
         }}
         select={{
-          list: ["Lagos", "Abuja", "Ilorin"].map((item) => ({
-            textContent: item,
-            value: item,
+          list: state.local.allBusstops?.map((item) => ({
+            textContent: item?.name,
+            value: String(item?.name),
           })),
           trigger: {
             error: undefined,
@@ -73,12 +73,12 @@ const NewBusstopModal = () => {
             onValueChange: (val: string) => {
               handlers.setInputState({ key: "cityNameInput", value: val });
               const city = state.local.allCities.find(
-                (city) => city?.name.toLowerCase() === val.toLowerCase()
+                (city) => String(city?._id?.toLowerCase()) === val.toLowerCase()
               );
 
               handlers.setInputState({ key: "city", value: city });
             },
-            value: state.inputs.city?.name,
+            value: state.inputs.cityNameInput
           },
         }}
       />

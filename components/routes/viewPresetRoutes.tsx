@@ -1,6 +1,11 @@
 "use client";
 
-import { ICity, IRouteContextFetchState, useRouteContext } from "@/context.state/route";
+import {
+  ICity,
+  IRoute,
+  IRouteContextFetchState,
+  useRouteContext,
+} from "@/context.state/route";
 import { CTABtn } from "./ctaBtn";
 import PresetRouteTile from "./presetRouteTile";
 import PlusInCircle from "./svgs/plusInCircle";
@@ -8,32 +13,85 @@ import Settings from "./svgs/settings";
 import Startoff from "./svgs/startoff";
 import { useEffect } from "react";
 import ApiService from "@/api/api.services";
+import Loading from "@/app/(auth)/loading";
+import { VscLoading } from "react-icons/vsc";
+import { usePathname, useRouter } from "next/navigation";
 
 const ViewPresetRoutes = () => {
+  const {
+    state: { local, fetch },
+    handlers,
+  } = useRouteContext();
+  const router = useRouter();
+  const path = usePathname();
 
-  const {state: {local},handlers} = useRouteContext();
+  const fetchData = async ({
+    loader,
+    url,
+  }: {
+    loader: keyof IRouteContextFetchState;
+    url: string;
+  }) => {
+    let resData, resErr;
+    handlers.setFetchState({ key: loader, value: true });
 
-  const getAllCities = async ({
-    loader
+    await ApiService.getWithBearerToken({ url: `/ride/${url}` })
+      .then((data) => {
+        handlers.setFetchState({ key: loader, value: false });
+
+        resData = data;
+      })
+      .catch((err) => {
+        resErr = err;
+      });
+
+      return {resData, resErr}
+  };
+
+  const getCitiesAndRoutes = async ({
+    loader,
   }: {
     loader: keyof IRouteContextFetchState;
   }) => {
-    handlers.setFetchState({ key: loader, value: true });
+    fetchData({ loader, url: "/cities" })
+      .then(({resData: data, resErr}) => {
+        const allCities = (data as any)?.allCities as ICity[];
 
-    await ApiService.getWithBearerToken({ url: `/user/ride/cities/all` })
-      .then((data) => {
-        handlers.setFetchState({ key: loader, value: false });
-        const allCities = (data?.allCities as ICity[])
-        handlers.setLocalState({key: 'allCities', value: allCities});
-        handlers.setLocalState({key: 'currentRoute', value: local.allPresetRoutes[0]});
+        handlers.setLocalState({ key: "allCities", value: allCities });
+
+        fetchData({ loader: "fetchingRoutes", url: `/routes` })
+          .then(({resData: data, resErr}) => {
+
+            const allRoutes = (data as any)?.allRoutes as IRoute[];
+
+            handlers.setLocalState({
+              key: "allPresetRoutes",
+              value: allRoutes,
+            });
+            handlers.setLocalState({
+              key: "currentRoute",
+              value: allRoutes[0],
+            });
+          })
+          .catch((err) => {});
       })
       .catch((err) => {});
   };
 
+  const switchToStage = ({
+    path,
+    stage,
+  }: {
+    path: string;
+    stage: "initial" | "final";
+  }) => {
+    router.push(`${path}?stage=${stage}`);
+  };
+
   useEffect(() => {
-    if(local.allCities?.length == 0) 
-      getAllCities({loader: 'fetchingCities' });
-  }, [])
+    if (local.allCities?.length == 0)
+      getCitiesAndRoutes({ loader: "fetchingCities" });
+  }, []);
 
   return (
     <div className="w-full h-full flex flex-col gap-2">
@@ -51,7 +109,7 @@ const ViewPresetRoutes = () => {
                   <Settings />
                 </span>
               ),
-              className: `bg-white`
+              className: `bg-white`,
             }}
             textProps={{
               children: "Sort",
@@ -67,8 +125,12 @@ const ViewPresetRoutes = () => {
               ),
               className: `bg-[#5D5FEF] border-[]`,
               onClick: () => {
-                handlers.setLocalState({key: 'routeCreationStage', value: 'initial'})
-              }
+                handlers.setLocalState({
+                  key: "routeCreationStage",
+                  value: "initial",
+                });
+                switchToStage({path, stage: 'initial'})
+              },
             }}
             textProps={{
               children: "Create New",
@@ -97,16 +159,28 @@ const ViewPresetRoutes = () => {
             <span className="text-black font-medium text-[14px]">Startoff</span>
           </span>
 
-          <span className="text-black font-medium text-[14px] text-right">Status</span>
+          <span className="text-black font-medium text-[14px] text-right">
+            Status
+          </span>
         </div>
         {/* Header */}
 
         {/* Body */}
         <div className="flex flex-col gap-1 px-[2em] flex-1 max-h-[28em] overflow-y-scroll">
-            {/* Routes in cities -- fetching by cities (Groupong them by cities) */}
-          {local.allCities?.map((city, index) => (
-            <PresetRouteTile city={city} key={index} />
-          ))}{/* Routes in cities -- fetching by cities (Groupong them by cities) */}
+          {/* Routes in cities -- fetching by cities (Groupong them by cities) */}
+          {!fetch.fetchingCities &&
+            local.allCities?.map((city, index) => (
+              <PresetRouteTile city={city} key={index} />
+            ))}
+          {/* Routes in cities -- fetching by cities (Groupong them by cities) */}
+
+          {/* Loading Spinner */}
+          {fetch.fetchingCities && (
+            <div className="w-full h-[28em] max-h-[28em] flex items-center justify-center">
+              <VscLoading className="w-[25px] h-[25px] animate-spin" />
+            </div>
+          )}
+          {/* Loading Spinner */}
         </div>
         {/* Body */}
       </div>

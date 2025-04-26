@@ -1,14 +1,52 @@
 'use client'
+import ApiService from "@/api/api.services";
 import Modal from "@/components/shared/modal";
 import SubHeader from "@/components/shared/sub_header";
 import { TicketGridView } from "@/components/tickets/pageComponents";
+import { ITicket, ITicketContextFetchState, useTicketContext } from "@/context.state/ticket";
 import { useState } from "react";
 
 
 function Page() {
+    const {state, handlers} = useTicketContext();
 
-  const [currentTab, setCurrentTab] = useState<'pending' | 'resolved'>('pending');
-  const [currentFilter, setCurrentFilter] = useState<'user' | 'driver'>('user');
+    const fetchData = async ({
+      loader,
+      url,
+    }: {
+      loader: keyof ITicketContextFetchState;
+      url: string;
+    }) => {
+      let resData, resErr;
+      handlers.setFetchState({ key: loader, value: true });
+  
+      await ApiService.getWithBearerToken({ url: `/ride/${url}` })
+        .then((data) => {
+          handlers.setFetchState({ key: loader, value: false });
+  
+          resData = data;
+        })
+        .catch((err) => {
+          resErr = err;
+        });
+  
+        return {resData, resErr}
+    };
+  
+    const getTickets = async ({
+      loader,
+    }: {
+      loader: keyof ITicketContextFetchState;
+    }) => {
+      fetchData({ loader, url: "/tickets/all" })
+        .then(({resData: data, resErr}) => {
+          const allTickets = (data as any)?.allTickets as ITicket[];
+  
+          handlers.setLocalState({ key: "allTickets", value: allTickets });
+        })
+        .catch((err) => {});
+    };
+
 
 
   return (
@@ -20,7 +58,7 @@ function Page() {
             {[{ name: 'pending', label: 'Pending' }, { name: 'resolved', label: 'Resolved' }].map(({ label, name }, index) => (
               <div
                 onClick={() => setCurrentTab(name as "pending" | "resolved")}
-                className={`w-fit h-full border-b-[4px] flex items-center justify-center ${currentTab == name ? 'border-b-5D5FEF text-5D5FEF' : 'border-b-transparent text-747474 cursor-pointer'}`} key={index}>{label}</div>
+                className={`w-fit h-full border-b-[4px] flex items-center justify-center ${state.inputs. == name ? 'border-b-5D5FEF text-5D5FEF' : 'border-b-transparent text-747474 cursor-pointer'}`} key={index}>{label}</div>
             ))}
 
             {/* //!filter: By Order, By User */}
