@@ -1,15 +1,19 @@
 "use client";
 import { createContext, FC, ReactNode, useContext, useState } from "react";
+import { IPlan } from "./route";
 
 // !Interfaces
 // !Input State
-interface ITicketContextInputState {}
+interface ITicketContextInputState {
+  status: "pending" | "resolved";
+  method: "user" | "driver";
+}
 // !Input State
 
 // !Local State
 interface ITicketContextLocalState {
-  allTickets: [];
-  newTickets: [];
+  allTickets: ITicket[];
+  displayTickets: ITicket[];
   selectedTicket: ITicket | null;
 }
 // !Local State
@@ -27,7 +31,47 @@ interface ITicketContextState {
 }
 
 // !Individuals
-export interface ITicket {}
+export type TPaymentStatus = "idle" | "successful" | "pending" | "failed";
+export type TPaymentOption = "wallet" | "cash" | "point" | "bank-transfer";
+export type TTicketSatus = "idle" | "cancelled" | "paid" | "booked";
+
+interface ITicketPayment {
+  paymentStatus: TPaymentStatus;
+  paymentOption: TPaymentOption;
+  riderCounterOffer: number;
+  ride: {
+    rideFee: number;
+    ridePlanFee: number;
+  };
+  trip: {
+    tripFee: number;
+    tripPlanFee: number;
+  };
+}
+
+export interface ITicket {
+  _id: string;
+  riderId: string;
+  riderCounterOffer: number;
+  quantity: number;
+  ticketOtp: number;
+  ticketStatus: TTicketSatus;
+  payment: ITicketPayment;
+  ride: {
+    currentRideId: string;
+    riderRideDetailsId: string;
+    ridePlan: IPlan;
+    rideFee: number;
+  };
+  trip: {
+    currentTripId: string;
+    riderTripDetailsId: string;
+    tripPlan: IPlan;
+    tripFee: number;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
 // !Individuals
 
 interface ITicketContext {
@@ -64,61 +108,64 @@ function TicketContextProvider({ children }: { children: ReactNode }) {
     fetch: {
       fetchingTickets: false,
     },
-    inputs: {},
+    inputs: {
+      status: "pending",
+      method: "user",
+    },
     local: {
       allTickets: [],
-      newTickets: [],
+      displayTickets: [],
       selectedTicket: null,
     },
   });
 
   const setFetchState = ({
-      key,
-      value,
-    }: {
-      key: keyof ITicketContextFetchState;
-      value: any;
-    }) => {
-        updateState((prev) => ({
-            ...prev,
-            fetch: {
-                ...prev.fetch,
-                [key]: value
-            }
-        }))
-    };
+    key,
+    value,
+  }: {
+    key: keyof ITicketContextFetchState;
+    value: any;
+  }) => {
+    updateState((prev) => ({
+      ...prev,
+      fetch: {
+        ...prev.fetch,
+        [key]: value,
+      },
+    }));
+  };
 
   const setInputState = ({
-      key,
-      value,
-    }: {
-      key: keyof ITicketContextInputState;
-      value: any;
-    }) => {
-        updateState((prev) => ({
-            ...prev,
-            inputs: {
-                ...prev.inputs,
-                [key]: value
-            }
-        }))
-    };
+    key,
+    value,
+  }: {
+    key: keyof ITicketContextInputState;
+    value: any;
+  }) => {
+    updateState((prev) => ({
+      ...prev,
+      inputs: {
+        ...prev.inputs,
+        [key]: value,
+      },
+    }));
+  };
 
   const setLocalState = ({
-      key,
-      value,
-    }: {
-      key: keyof ITicketContextLocalState;
-      value: any;
-    }) => {
-        updateState((prev) => ({
-            ...prev,
-            local: {
-                ...prev.local,
-                [key]: value
-            }
-        }))
-    };
+    key,
+    value,
+  }: {
+    key: keyof ITicketContextLocalState;
+    value: any;
+  }) => {
+    updateState((prev) => ({
+      ...prev,
+      local: {
+        ...prev.local,
+        [key]: value,
+      },
+    }));
+  };
 
   return (
     <TicketContext.Provider
