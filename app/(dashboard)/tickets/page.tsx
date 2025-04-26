@@ -57,7 +57,7 @@ function Page() {
 
             {[{ name: 'pending', label: 'Pending' }, { name: 'resolved', label: 'Resolved' }].map(({ label, name }, index) => (
               <div
-                onClick={() => setCurrentTab(name as "pending" | "resolved")}
+                onClick={() => handlers.setInputState(name as "pending" | "resolved")}
                 className={`w-fit h-full border-b-[4px] flex items-center justify-center ${state.inputs. == name ? 'border-b-5D5FEF text-5D5FEF' : 'border-b-transparent text-747474 cursor-pointer'}`} key={index}>{label}</div>
             ))}
 
