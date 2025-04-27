@@ -74,21 +74,25 @@ function Route() {
       pickupBusstop,
       dropoffBusstop,
       city,
-      inTripDropoffs: selectedBusstops?.map(({number, ...busstop}) => busstop),
-      editable: customizable,
-      active: statusActive,
+      inTripDropoffs: selectedBusstops?.map(
+        ({ number, ...busstop }) => busstop
+      ),
+      editable: String(customizable),
+      active: String(statusActive),
       allowedPaymentOptions: selectedPaymentOptions,
-      unitFares: unitFaresInputs,
-      driverCommission
+      unitFares: unitFaresInputs?.map((unitFare) => ({
+        pickupBusstopId: pickupBusstop?._id,
+        dropoffBusstopId: dropoffBusstop?._id,
+        price: unitFare?.fare
+      })),
+      driverCommission,
     };
 
-    handlers.setFetchState({ key: 'uploadingRoute', value: true });
+    handlers.setFetchState({ key: "uploadingRoute", value: true });
 
-    await ApiService.postWithBearerToken({ url: `/ride/route/create`,
-      data
-     })
+    await ApiService.postWithBearerToken({ url: `/ride/route/create`, data })
       .then((data) => {
-        handlers.setFetchState({ key: 'uploadingRoute', value: false });
+        handlers.setFetchState({ key: "uploadingRoute", value: false });
 
         const msg = data?.msg;
         const code = data?.code;
@@ -98,7 +102,7 @@ function Route() {
           description: msg,
         });
       })
-      .catch((err) => {});    
+      .catch((err) => {});
   };
 
   //   Updating stage in state
@@ -150,7 +154,9 @@ function Route() {
               disabled: fetch.uploadingRoute,
               children: fetch.uploadingRoute ? (
                 <VscLoading className="animate-spin" />
-              ) : "Create Route",
+              ) : (
+                "Create Route"
+              ),
               className: `col-start-1 -col-end-1 row-start-2 row-end-3 h-[40px] border-[1px] ${
                 routeCreateable()
                   ? "bg-[#5D5FEF] border-[#5D5FEF] cursor-pointer text-white"

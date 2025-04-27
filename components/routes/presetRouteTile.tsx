@@ -14,7 +14,7 @@ const PresetRouteTile = ({ city }: { city: ICity }) => {
     handlers,
   } = useRouteContext();
   const presetRoutes = local.allPresetRoutes.filter(
-    (route) => route?.city?._id == city?._id
+    (route) => String(route?.city?._id) === String(city?._id)
   );
 
   return (
@@ -71,6 +71,14 @@ const PresetRouteTile = ({ city }: { city: ICity }) => {
         </div>
       ))}
       {/* Route Items */}
+
+       {/* Loading Spinner */}
+       {fetch.fetchingRoutes && (
+            <div className="w-full h-[28em] max-h-[28em] flex items-center justify-center">
+              <VscLoading className="w-[25px] h-[25px] animate-spin" />
+            </div>
+          )}
+          {/* Loading Spinner */}
     </div>
   );
 };
