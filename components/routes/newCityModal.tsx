@@ -12,6 +12,9 @@ import {
 } from "@/context.state/route";
 import Location from "./svgs/location";
 import { useEffect, useState } from "react";
+import ApiService from "@/api/api.services";
+import { toast } from "@/hooks/use-toast";
+import { VscLoading } from "react-icons/vsc";
 
 const busstops = ["Ikate", "Lekki", "Oshodi"];
 
@@ -23,7 +26,7 @@ const NewCityModal = () => {
     state.inputs.stateNameInput == "" || state.inputs.cityNameInput == ""
   );
 
-  const createCity = () => {
+  const createCity = async () => {
     if (fieldsInvalid) return;
 
     const newCity = {
@@ -31,7 +34,26 @@ const NewCityModal = () => {
       stateName: state.inputs.stateNameInput,
     } as ICityInput;
 
-    hideModal();
+    handlers.setFetchState({ key: "uploadingCity", value: true });
+
+    await ApiService.postWithBearerToken({
+      url: `/ride/city/create`,
+      data: newCity
+    })
+      .then((data) => {
+        handlers.setFetchState({ key: "uploadingCity", value: false });
+
+        const msg = data?.msg;
+        const code = data?.code;
+
+        toast({
+          title: "City Upload",
+          description: msg,
+        });
+
+        if(code == 200 || code == 201) hideModal();
+      })
+      .catch((err) => {});
   };
 
   useEffect(() => {
@@ -68,7 +90,7 @@ const NewCityModal = () => {
           <div className="text-black text-[14px] font-medium">{label}</div>
 
           <input
-            onChange={({target: {value}}) => onChange(value)}
+            onChange={({ target: { value } }) => onChange(value)}
             value={value}
             className="w-full h-[50px] bg-[#F9F7F8] border-[1px] border-d7d7d7 rounded-[10px] p-[1em] active:border-black active:outline focus:border-black focus-within:border-black active:outline-none focus-within:outline-none focus:outline-none"
             type="text"
@@ -104,10 +126,10 @@ const NewCityModal = () => {
               ? "bg-transparent cursor-not-allowed"
               : "bg-[#5D5FEF] cursor-pointer"
           }`,
-          onClick: () => createCity(),
+          onClick: () => !state.fetch.uploadingCity && createCity(),
         }}
         textProps={{
-          children: "Create City",
+          children: <span className="inline-flex gap-2 items-center">Create City {state.fetch.uploadingCity && <VscLoading className="animate-spin" />}</span>,
           className: `${
             fieldsInvalid ? "text-[#D7D7D7]" : "text-white"
           } text-[12px]`,

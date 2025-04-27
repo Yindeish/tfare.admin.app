@@ -1,5 +1,6 @@
 "use client";
 
+import ApiService from "@/api/api.services";
 import Btn from "@/components/routes/btn";
 import CreateStartDropoffPaymentOptions from "@/components/routes/createStartDropoffPaymentOptions";
 import CreateUniitfares from "@/components/routes/createUnitFares";
@@ -8,8 +9,11 @@ import ViewPresetRoutes from "@/components/routes/viewPresetRoutes";
 import ViewRouteBusstops from "@/components/routes/viewRouteBusstops";
 import Modal from "@/components/shared/modal";
 import { useRouteContext } from "@/context.state/route";
+import { toast } from "@/hooks/use-toast";
+import { Toast } from "@radix-ui/react-toast";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
+import { VscLoading } from "react-icons/vsc";
 
 function Route() {
   const searchParams = useSearchParams();
@@ -32,14 +36,78 @@ function Route() {
   };
 
   const routeCreateable = () => {
-    const {city, pickupBusstop, dropoffBusstop, selectedPaymentOptions, unitFaresInputs, selectedBusstops, driverCommission} = inputs;
+    const {
+      city,
+      pickupBusstop,
+      dropoffBusstop,
+      selectedPaymentOptions,
+      unitFaresInputs,
+      selectedBusstops,
+      driverCommission,
+    } = inputs;
 
-    return city && pickupBusstop && dropoffBusstop && selectedPaymentOptions.length >=1 && unitFaresInputs.length >=1 && selectedBusstops.length >=1 && driverCommission != ''
-  }
+    return (
+      city &&
+      pickupBusstop &&
+      dropoffBusstop &&
+      selectedPaymentOptions.length >= 1 &&
+      unitFaresInputs.length >= 1 &&
+      selectedBusstops.length >= 1 &&
+      driverCommission != ""
+    );
+  };
+
+  const handleSubmit = async () => {
+    const {
+      city,
+      pickupBusstop,
+      dropoffBusstop,
+      selectedPaymentOptions,
+      unitFaresInputs,
+      selectedBusstops,
+      driverCommission,
+      customizable,
+      statusActive,
+    } = inputs;
+
+    const data = {
+      pickupBusstop,
+      dropoffBusstop,
+      city,
+      inTripDropoffs: selectedBusstops?.map(
+        ({ number, ...busstop }) => busstop
+      ),
+      editable: String(customizable),
+      active: String(statusActive),
+      allowedPaymentOptions: selectedPaymentOptions,
+      unitFares: unitFaresInputs?.map((unitFare) => ({
+        pickupBusstopId: pickupBusstop?._id,
+        dropoffBusstopId: dropoffBusstop?._id,
+        price: unitFare?.fare
+      })),
+      driverCommission,
+    };
+
+    handlers.setFetchState({ key: "uploadingRoute", value: true });
+
+    await ApiService.postWithBearerToken({ url: `/ride/route/create`, data })
+      .then((data) => {
+        handlers.setFetchState({ key: "uploadingRoute", value: false });
+
+        const msg = data?.msg;
+        const code = data?.code;
+
+        toast({
+          title: "Route Upload",
+          description: msg,
+        });
+      })
+      .catch((err) => {});
+  };
 
   //   Updating stage in state
   useEffect(() => {
-    handlers.setLocalState({key:'routeCreationStage', value: stage});
+    handlers.setLocalState({ key: "routeCreationStage", value: stage });
   }, []);
   //   Updating stage in state
 
@@ -83,20 +151,29 @@ function Route() {
           {/* Create Route Btn */}
           <Btn
             props={{
-              children: "Create Route",
+              disabled: fetch.uploadingRoute,
+              children: fetch.uploadingRoute ? (
+                <VscLoading className="animate-spin" />
+              ) : (
+                "Create Route"
+              ),
               className: `col-start-1 -col-end-1 row-start-2 row-end-3 h-[40px] border-[1px] ${
                 routeCreateable()
                   ? "bg-[#5D5FEF] border-[#5D5FEF] cursor-pointer text-white"
                   : "bg-transparent border-[#D7D7D7] text-[#D7D7D7] cursor-not-allowed"
               }`,
+              onClick: () => !fetch.uploadingRoute && handleSubmit(),
             }}
           />
           {/* Create Route Btn */}
         </div>
       )}
 
-       {/* //!Modal */}
-       <Modal containerClassName="w-[30em] max-w-[30em] h-fit min-h-[15em] max-h-[90vh] top-[5vh] p-0 rounded-tl-[0px] rounded-tr-[0px] overflow-hidden cursor-default" containerStyle={{ padding: 0 }} />
+      {/* //!Modal */}
+      <Modal
+        containerClassName="w-[30em] max-w-[30em] h-fit min-h-[15em] max-h-[90vh] top-[5vh] p-0 rounded-tl-[0px] rounded-tr-[0px] overflow-hidden cursor-default"
+        containerStyle={{ padding: 0 }}
+      />
       {/* //!Modal */}
     </div>
   );

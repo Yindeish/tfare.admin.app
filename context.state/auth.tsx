@@ -346,8 +346,7 @@ function AuthContextProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem(LocalState.state.USER);
       localStorage.removeItem(LocalState.state.TOKEN);
 
-      // Redirect to login
-      router.push("/auth");
+      router.replace("/auth");
     } catch (error) {
       console.error("Sign out error:", error);
     } finally {

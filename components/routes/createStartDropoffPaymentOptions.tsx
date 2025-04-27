@@ -6,58 +6,78 @@ import { number, ObjectSchema, string } from "yup";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import Checkbox from "./checkbox";
-import { IBusStop, IRouteContextFetchState, useRouteContext } from "@/context.state/route";
+import {
+  IBusStop,
+  IRouteContextFetchState,
+  useRouteContext,
+} from "@/context.state/route";
 import { useModal } from "@/context.state/shared/modal";
 import NewCityModal from "./newCityModal";
 import ApiService from "@/api/api.services";
 
 const CreateStartDropoffPaymentOptions = () => {
-  const { state: {fetch, inputs, local}, handlers } = useRouteContext();
   const {
-    values,
-    errors,
-    touched,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-    setFieldValue,
-  } = useFormik({
-    validationSchema: new ObjectSchema({
-      cityName: string().required("City Name is required!"),
-      startOffName: string().required("sStartOff Name is required!"),
-      dropoffName: string().required("Dropoff Name is required!"),
-      driverCommission: number().required("Driver Commission is required!"),
-    }),
-    initialValues: {
-      cityName: "",
-      startOffName: "",
-      dropoffName: "",
-      driverCommission: inputs.driverCommission,
-    },
-    onSubmit: (values) => {},
-  });
+    state: { fetch, inputs, local },
+    handlers,
+  } = useRouteContext();
+  // const {
+  //   values,
+  //   errors,
+  //   touched,
+  //   handleChange,
+  //   handleBlur,
+  //   handleSubmit,
+  //   setFieldValue,
+  // } = useFormik({
+  //   validationSchema: new ObjectSchema({
+  //     cityName: string().required("City Name is required!"),
+  //     startOffName: string().required("sStartOff Name is required!"),
+  //     dropoffName: string().required("Dropoff Name is required!"),
+  //     driverCommission: number().required("Driver Commission is required!"),
+  //   }),
+  //   initialValues: {
+  //     cityName: "",
+  //     startOffName: "",
+  //     dropoffName: "",
+  //     driverCommission: inputs.driverCommission,
+  //   },
+  //   onSubmit: (values) => {},
+  // });
   const { showModal } = useModal();
 
   const getAllBusstops = async ({
-    loader
+    loader,
   }: {
     loader: keyof IRouteContextFetchState;
   }) => {
     handlers.setFetchState({ key: loader, value: true });
 
-    await ApiService.getWithBearerToken({ url: `/user/ride/busstops/all` })
+    await ApiService.getWithBearerToken({ url: `/ride/busstops` })
       .then((data) => {
         handlers.setFetchState({ key: loader, value: false });
-        const allBusstops = (data?.allBusstops as IBusStop[])
-        handlers.setLocalState({key: 'allBusstops', value: allBusstops});
+        const allBusstops = data?.allBusstops as IBusStop[];
+        handlers.setLocalState({
+          key: "allBusstops",
+          value: allBusstops?.map((busstop, index) => ({
+            ...busstop,
+            number: index,
+          })),
+        });
+        handlers.setLocalState({
+          key: "matchBusstops",
+          value: allBusstops?.map((busstop, index) => ({
+            ...busstop,
+            number: index,
+          })),
+        });
       })
       .catch((err) => {});
   };
 
   useEffect(() => {
-    if(local.allBusstops?.length == 0) 
-      getAllBusstops({loader: 'fetchingBusstops' });
-  }, [])
+    if (local.allBusstops?.length == 0)
+      getAllBusstops({ loader: "fetchingBusstops" });
+  }, []);
 
 
   return (
@@ -94,56 +114,57 @@ const CreateStartDropoffPaymentOptions = () => {
             {
               label: "City",
               placeholder: "Select City",
-              dropdownList: local.allCities?.map((city) => ({id: city?._id,name: city?.name})),
+              dropdownList: local.allCities?.map((city, index) => ({
+                ...city,
+                number: index,
+              })),
               onSelect: (val: string) => {
-                setFieldValue("cityName", val);
+                handlers.setInputState({ key: "cityNameInput", value: val });
+                const city = local.allCities.find((city) => city?._id?.toLowerCase() === val.toLowerCase());
 
-                const city = local.allCities.find(
-                  (city) => city?._id === val
-                );
-  
-                // setFieldValue("cityName", city?.name);
                 handlers.setInputState({ key: "city", value: city });
               },
-              error: errors.cityName,
-              touched: touched.cityName,
-              value: values.cityName,
+              error: "",
+              touched: false,
+              value: inputs.cityNameInput,
             },
             {
               label: "Startoff Bus Stop",
               placeholder: "Select Bus Stop",
-              dropdownList: local.allBusstops?.map((busstop) => ({id: busstop?._id, name: busstop?.name})),
+              dropdownList: local.allBusstops,
               onSelect: (val: string) => {
-                setFieldValue("startOffName", val);
-
+                handlers.setInputState({ key: "pickupNameInput", value: val });
                 const busstop = local.allBusstops.find(
-                  (busstop) => busstop?._id === val
+                  (busstop) => String(busstop?._id?.toLowerCase()) === val.toLowerCase()
                 );
-  
-                // setFieldValue("cityName", busstop?.name);
-                handlers.setInputState({ key: "pickupBusstop", value: busstop });
+
+                handlers.setInputState({
+                  key: "pickupBusstop",
+                  value: busstop,
+                });
               },
-              error: errors.startOffName,
-              touched: touched.startOffName,
-              value: values.startOffName,
+              error: "",
+              touched: false,
+              value: inputs.pickupNameInput,
             },
             {
               label: "Endpoint Bus Stop",
               placeholder: "Select Bus Stop",
-              dropdownList: local.allBusstops?.map((busstop) => ({id: busstop?._id, name: busstop?.name})),
+              dropdownList: local.allBusstops,
               onSelect: (val: string) => {
-                setFieldValue("dropoffName", val);
-
+                handlers.setInputState({ key: "dropoffNameInput", value: val });
                 const busstop = local.allBusstops.find(
-                  (busstop) => busstop?._id === val
+                  (busstop) => String(busstop?._id?.toLowerCase()) === val.toLowerCase()
                 );
-  
-                // setFieldValue("dropoffName", busstop?.name);
-                handlers.setInputState({ key: "dropoffBusstop", value: busstop });
+
+                handlers.setInputState({
+                  key: "dropoffBusstop",
+                  value: busstop,
+                });
               },
-              error: errors.dropoffName,
-              touched: touched.dropoffName,
-              value: values.dropoffName,
+              error: "",
+              touched: false,
+              value: inputs.dropoffNameInput,
             },
           ].map(
             (
@@ -166,7 +187,7 @@ const CreateStartDropoffPaymentOptions = () => {
                 select={{
                   list: dropdownList?.map((item) => ({
                     textContent: item?.name,
-                    value: String(item?.id),
+                    value: String(item?._id),
                   })),
                   trigger: {
                     error,
@@ -196,8 +217,7 @@ const CreateStartDropoffPaymentOptions = () => {
             { label: "Points", value: "points" },
             { label: "Pay Online", value: "online" },
           ].map(({ label, value }, index) => {
-            const optionChecked =
-              inputs.selectedPaymentOptions.includes(value);
+            const optionChecked = inputs.selectedPaymentOptions.includes(value);
 
             return (
               <div className="flex justify-between" key={index}>
@@ -217,10 +237,7 @@ const CreateStartDropoffPaymentOptions = () => {
                       } else
                         handlers.setInputState({
                           key: "selectedPaymentOptions",
-                          value: [
-                            ...inputs.selectedPaymentOptions,
-                            value,
-                          ],
+                          value: [...inputs.selectedPaymentOptions, value],
                         });
                     },
                   }}
@@ -240,10 +257,9 @@ const CreateStartDropoffPaymentOptions = () => {
           {/* Input */}
           <input
             onChange={({ target: { value } }) => {
-              setFieldValue("driverCommission", value);
-              handlers.setInputState({key: 'driverCommission', value})
+              handlers.setInputState({ key: "driverCommission", value });
             }}
-            value={values.driverCommission}
+            value={inputs.driverCommission}
             className="w-[35px] h-[35px] bg-[#F9F7F8] border-[1px] border-d7d7d7 p-[0.3em] rounded-[10px] active:border-black active:outline focus:border-black focus-within:border-black active:outline-none focus-within:outline-none focus:outline-none"
             type="number"
             placeholder="1%"

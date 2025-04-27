@@ -22,76 +22,18 @@ const CreateUnitfares = () => {
   const { handlers, state } = useRouteContext();
   const { showModal } = useModal();
 
-  const editable = state.inputs.unitFaresInputs.filter((feild) => feild?.selected).length == 1;
-
-  const deletable = state.inputs.unitFaresInputs.filter((feild) => feild?.selected).length >= 1;
+  const [mutationState, setMutationState] = useState({
+    editable: false,
+    deletable: false,
+  })
 
   useEffect(() => {
-    const allBusstops = [
-      {
-        city: {
-          _id: "6656589",
-          name: "yaba",
-          stateName: "lagos",
-        },
-        name: "lekki",
-        order: 1,
-        _id: "9865790",
-      },
-      {
-        city: {
-          _id: "6656589",
-          name: "yaba",
-          stateName: "lagos",
-        },
-        name: "ajah",
-        order: 2,
-        _id: "9865790",
-      },
-      {
-        city: {
-          _id: "6656589",
-          name: "yaba",
-          stateName: "lagos",
-        },
-        name: "ikate",
-        order: 3,
-        _id: "9865790",
-      },
-      {
-        city: {
-          _id: "6656589",
-          name: "yaba",
-          stateName: "lagos",
-        },
-        name: "oshodi",
-        order: 4,
-        _id: "9865790",
-      },
-      {
-        city: {
-          _id: "6656589",
-          name: "yaba",
-          stateName: "lagos",
-        },
-        name: "yaba",
-        order: 5,
-        _id: "9865790",
-      },
-      {
-        city: {
-          _id: "6656589",
-          name: "yaba",
-          stateName: "lagos",
-        },
-        name: "ojodu",
-        order: 6,
-        _id: "9865790",
-      },
-    ].map((item, index) => ({ ...item, number: index + 1 }));
-    handlers.setLocalState({ key: "allBusstops", value: allBusstops });
-    handlers.setLocalState({ key: "matchBusstops", value: allBusstops });
-  }, []); //testing
+    const editable = state.inputs.unitFaresInputs.filter((feild) => feild?.selected == true).length == 1;
+
+    const deletable = state.inputs.unitFaresInputs.filter((feild) => feild?.selected == true).length >= 1;
+
+    setMutationState({editable, deletable});
+  }, [state.inputs.unitFaresInputs]);
 
   return (
     <div className="w-full h-full flex flex-col gap-2">
@@ -120,9 +62,9 @@ const CreateUnitfares = () => {
         <CTABtn 
         containerProps={{
             children: <span className="w-[25px] h-[24px]"><EditBtn /></span>,
-            className: `${editable ? 'cursor-pointer': 'cursor-not-allowed'}`,
+            className: `${mutationState.editable != true ? 'cursor-not-allowed' : 'cursor-pointer'}`,
             onClick: () => {
-                if(!editable) {
+                if(mutationState.editable != true) {
                     return;
                 } else {
                     showModal(<EditUnitfareModal />, true);
@@ -137,9 +79,9 @@ const CreateUnitfares = () => {
         <CTABtn 
         containerProps={{
             children: <span className="w-[25px] h-[24px]"><DeleteBtn /></span>,
-            className: `pr-0 p-2.5 ${deletable ? 'cursor-pointer': 'cursor-not-allowed'}`,
+            className: `pr-0 p-2.5 ${mutationState.deletable == true ? 'cursor-pointer': 'cursor-not-allowed'}`,
             onClick: () => {
-                if(!editable) {
+                if(mutationState.deletable != true) {
                     return;
                 } else {
                     const updatedUnitFares = state.inputs.unitFaresInputs.filter((feild) => feild?.selected != true);
@@ -176,10 +118,11 @@ const CreateUnitfares = () => {
               props={{
                 className: `col-span-1 w-[20px] h-[20px]`,
                 onClick: () => {
+                  const value = state.inputs.unitFaresInputs[0]?.selected;
                     const updatedUnitFares = state.inputs.unitFaresInputs.map((feild) => {
                         return {
                             ...feild,
-                            selected: !feild?.selected 
+                            selected: !value
                         }
                     });
 
@@ -228,7 +171,7 @@ const CreateUnitfares = () => {
 
         {/* Dropoff select tiles */}
         <div className="flex-1 max-h-[22em] flex flex-col gap-2 overflow-y-scroll">
-          {state.inputs.unitFaresInputs.map((unitFare, index) => (
+          {state.inputs.unitFaresInputs?.map((unitFare, index) => (
             <div
               className="grid grid-cols-[20px_1fr_1fr_1fr] gap-2 place-content-center place-items-center"
               key={index}
@@ -239,11 +182,11 @@ const CreateUnitfares = () => {
                 props={{
                   className: `col-span-1 w-[20px] h-[20px]`,
                   onClick: () => {
-                    const updatedUnitFares = state.inputs.unitFaresInputs.map((feild) => {
+                    const updatedUnitFares = state.inputs.unitFaresInputs?.map((feild) => {
                         if(feild?.number == unitFare?.number) {
                             return {
                                 ...feild,
-                                selected: ! feild?.selected
+                                selected: !feild?.selected
                             }
                         }
                         else return feild;

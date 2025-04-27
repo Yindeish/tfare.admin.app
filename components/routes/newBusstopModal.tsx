@@ -15,6 +15,9 @@ import {
 import Location from "./svgs/location";
 import { useEffect, useState } from "react";
 import Bus from "./svgs/bus";
+import ApiService from "@/api/api.services";
+import { toast } from "@/hooks/use-toast";
+import { VscLoading } from "react-icons/vsc";
 
 const busstops = ["Ikate", "Lekki", "Oshodi"];
 
@@ -26,19 +29,34 @@ const NewBusstopModal = () => {
     state.inputs.cityNameInput == "" || state.inputs.busstopNameInput == ""
   );
 
-  const createBusstop = () => {
+  const createBusstop = async () => {
     if (fieldsInvalid) return;
 
     const newBusstop = {
       city: state.inputs.city,
-      name: state.inputs.cityNameInput,
+      name: state.inputs.busstopNameInput,
     } as IBusStopInput;
 
-    handlers.setLocalState({
-      key: "allBusstops",
-      value: [...state.local.allBusstops, newBusstop],
-    }); // testing
-    hideModal();
+    handlers.setFetchState({ key: "uploadingBusstop", value: true });
+
+    await ApiService.postWithBearerToken({
+      url: `/ride/busstop/create`,
+      data: newBusstop
+    })
+      .then((data) => {
+        handlers.setFetchState({ key: "uploadingBusstop", value: false });
+
+        const msg = data?.msg;
+        const code = data?.code;
+
+        toast({
+          title: "Busstop Upload",
+          description: msg,
+        });
+
+        if(code == 200 || code == 201) hideModal();
+      })
+      .catch((err) => {});
   };
 
   useEffect(() => {
@@ -58,27 +76,27 @@ const NewBusstopModal = () => {
           children: "City",
         }}
         select={{
-          list: ["Lagos", "Abuja", "Ilorin"].map((item) => ({
-            textContent: item,
-            value: item,
+          list: state.local.allCities?.map((item) => ({
+            textContent: item?.name,
+            value: String(item?._id),
           })),
           trigger: {
             error: undefined,
             touched: false,
             placeholder: "Select City",
-            value: state.inputs.city?.name,
+            value: state.inputs.cityNameInput,
             className: `bg-[#F9F7F8] rounded-[10px] border-[#D7D7D7] border-[1px]`,
           },
           select: {
             onValueChange: (val: string) => {
               handlers.setInputState({ key: "cityNameInput", value: val });
               const city = state.local.allCities.find(
-                (city) => city?.name.toLowerCase() === val.toLowerCase()
+                (city) => String(city?._id?.toLowerCase()) === val.toLowerCase()
               );
 
               handlers.setInputState({ key: "city", value: city });
             },
-            value: state.inputs.city?.name,
+            value: state.inputs.cityNameInput
           },
         }}
       />
@@ -131,10 +149,10 @@ const NewBusstopModal = () => {
               ? "bg-transparent cursor-not-allowed"
               : "bg-[#5D5FEF] cursor-pointer"
           }`,
-          onClick: () => createBusstop(),
+          onClick: () => !state.fetch.uploadingBusstop && createBusstop(),
         }}
         textProps={{
-          children: "Create Bus Stop",
+          children: <span className="inline-flex gap-2 items-center">Create Bus Stop {state.fetch.uploadingBusstop && <VscLoading className="animate-spin" />}</span>,
           className: `${
             fieldsInvalid ? "text-[#D7D7D7]" : "text-white"
           } text-[12px]`,
