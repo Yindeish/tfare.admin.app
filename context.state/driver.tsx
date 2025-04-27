@@ -11,7 +11,7 @@ interface IDriversContextInputState {}
 interface IDriversContextLocalState {
   allDrivers: IUser[];
   newDrivers: IUser[];
-  selectedDriver: Driver | null;
+  selectedDriver: IUser | null;
 }
 // !Local State
 

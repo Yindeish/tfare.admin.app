@@ -97,11 +97,8 @@ function Page() {
 
                   <Expand onClick={() => {
                     handlers.setLocalState({
-                      key: 'selectedDriver', value: {
-
-                      }
+                      key: 'selectedDriver', value: driver
                     })
-                    console.log()
                     showModal(<DriverModal />, false)
                   }} className="w-[18px] h-[18px] text-747474 cursor-pointer" />
                 </div>
@@ -184,9 +181,7 @@ function Page() {
 
                   <Expand onClick={() => {
                     handlers.setLocalState({
-                      key: 'selectedDriver', value: {
-
-                      }
+                      key: 'selectedDriver', value: driver
                     })
                     showModal(<DriverModal />, false)
                   }} className="w-[18px] h-[18px] cursor-pointer" />
