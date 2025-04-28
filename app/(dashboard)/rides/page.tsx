@@ -21,10 +21,6 @@ import { IRoute } from "@/context.state/route";
 function Page() {
   const { state: layoutState, updateState } = useLayoutContext();
   const { state: {inputs}, handlers } = useRideContext();
-  const [currentTab, setCurrentTab] = useState<"ongoing" | "completed">(
-    "ongoing"
-  );
-  const [currentFilter, setCurrentFilter] = useState<"order" | "user">("order");
 
   const activeSvgClassName = "w-[20px] h-[20px] text-5D5FEF";
   const inActiveSvgClassName = "w-[20px] h-[20px] text-black";
@@ -126,7 +122,7 @@ function Page() {
 
       {layoutState.view === "grid" ? (
         <RideGridView />
-      ) : currentFilter === "order" ? (
+      ) : inputs.method === "order" ? (
         <ByOrderRowView />
       ) : (
         <ByUserRowView />

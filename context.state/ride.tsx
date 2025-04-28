@@ -53,8 +53,8 @@ export interface IRide {
     rideStatus: TRideStatus;
     riderCounterOffer: number;
     currentRideId: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface ICurrentRide {
@@ -64,8 +64,8 @@ export interface ICurrentRide {
     vehicleName: string;
     routeId: string;
     ridersRides: IRide[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 }
 // !Individuals
 

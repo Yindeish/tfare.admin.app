@@ -5,7 +5,7 @@ import { useLayoutContext } from "@/context.state/shared/layout";
 import { useModal } from "@/context.state/shared/modal";
 import { Expand } from "@/public/icons/homeSvgs";
 import { useState } from "react";
-import RideTripModal from "@/components/rides/modalComponents";
+import RideTripModal from "@/components/trips/modalComponents";
 import StatusBadge from "../shared/status_badge";
 import { useTripContext } from "@/context.state/trip";
 import { Riders } from "@/public/icons/shared/sidebarSvgs";
