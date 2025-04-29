@@ -23,6 +23,7 @@ import rideTripsImages from "@/constants/images/ridesTrips";
 import { LuClock3 } from "react-icons/lu";
 import { useTripContext } from "@/context.state/trip";
 import { Utils } from "@/utils";
+import { useRideContext } from "@/context.state/ride";
 
 type TTab = "order" | "transaction" | "";
 
@@ -34,7 +35,7 @@ function RideTripModal() {
   const {
     state: { fetch, inputs, local },
     handlers,
-  } = useTripContext();
+  } = useRideContext();
 
   const tab: TTab = searchParams.get("tab") as TTab;
   const editing: string = searchParams.get("edit") as string;
@@ -83,12 +84,12 @@ function RideTripModal() {
               <Bus className="w-[20px] h-[20px] text-747474" />
 
               <span className={`font-bold text-[16px]`}>
-                Ride {`#${local?.selectedTrip?._id?.slice(0, 10)}`}
+                Ride {`#${local?.selectedRide?._id?.slice(0, 10)}`}
               </span>
             </div>
 
             <StatusBadge
-              status={local.selectedTrip?.rideStatus as string}
+              status={local.selectedRide?.rideStatus as string}
               className="bg-FFAE0210 text-FFAE02"
               dotClassName="text-FFAE02 rounded-full"
               enabled
@@ -103,13 +104,13 @@ function RideTripModal() {
                 Driver:
               </span>
               <span className={`font-normal text-[14px] text-black capitalize`}>
-                {local?.selectedTrip?.driver?.fullName}
+                {local?.selectedRide?.driver?.fullName}
               </span>
             </div>
 
             <span className="inline-flex gap-[0.3em] items-center w-fit h-fit">
               <LuClock3 className="text-27AE65 w-[16px] h-[16px]" />
-              <span className="font-normal text-[12px] text-747474">{Utils.formatTime(local.selectedTrip?.departureTime as string)}</span>
+              <span className="font-normal text-[12px] text-747474">{Utils.formatTime(local.selectedRide?.createdAt as string)}</span>
             </span>
           </div>
           {/* //!Driver Name, Duration */}
@@ -139,10 +140,10 @@ function RideTripModal() {
 
             <div className="w-full flex items-center justify-between">
               <span className="font-bold text-[14px] text-black capitalize">
-                {local.selectedTrip?.route?.pickupBusstop?.name}
+                {local.selectedRide?.route?.pickupBusstop?.name}
               </span>
               <span className="font-medium text-[14px] text-black">
-                {Utils.formatTime(local.selectedTrip?.departureTime as string)}
+                {Utils.formatTime(local.selectedRide?.createdAt as string)}
               </span>
             </div>
           </div>
@@ -150,7 +151,7 @@ function RideTripModal() {
 
           {/* //!Dropoff Bus Stops */}
           <div className="w-[78%] h-[55vh] flex flex-col pl-[1em] overflow-y-scroll">
-            {local.selectedTrip?.route?.inTripDropoffs
+            {local.selectedRide?.route?.inTripDropoffs
             ?.map((dropoff, index) => ({...dropoff, number: index+1}))
             ?.map((dropoff, index) => (
               <div className="border-l-[1px] border-l-d7d7d7" key={index}>

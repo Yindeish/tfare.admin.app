@@ -41,7 +41,7 @@ function Page() {
   };
 
   useEffect(() => {
-    // if(local.allTrips?.length == 0) 
+    if(local.allRiders?.length == 0) 
       getRiders({loader: 'fetchingRiders'});
   }, [])
 
