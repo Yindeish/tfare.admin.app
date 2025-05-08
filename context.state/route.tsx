@@ -44,6 +44,8 @@ export interface IRouteContextFetchState {
   uploadingRoute: boolean,
   uploadingCity: boolean,
   uploadingBusstop: boolean,
+  activatingRoute: boolean,
+  deactivatingRoute: boolean,
 }
 // !Fetch
 
@@ -155,6 +157,8 @@ function RouteContextProvider({ children }: { children: ReactNode }) {
       uploadingRoute: false,
       uploadingBusstop: false,
       uploadingCity: false,
+      activatingRoute: false,
+      deactivatingRoute: false,
     },
     inputs: {
       searchText: "",

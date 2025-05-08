@@ -5,8 +5,8 @@ import { ICurrentRide, IRide, useRideContext } from "@/context.state/ride";
 import { useLayoutContext } from "@/context.state/shared/layout";
 import { useModal } from "@/context.state/shared/modal";
 import { Expand } from "@/public/icons/homeSvgs";
-import { useState } from "react";
-import RideTripModal from "@/components/rides/modalComponents";
+import { useEffect, useState } from "react";
+import RideModal from "@/components/rides/modalComponents";
 import StatusBadge from "../shared/status_badge";
 import { Item } from "@radix-ui/react-select";
 import { IRoute } from "@/context.state/route";
@@ -54,9 +54,9 @@ function RideGridView() {
                   onClick={() => {
                     handlers.setLocalState({
                       key: "selectedRide",
-                      value: Item,
+                      value: item,
                     });
-                    showModal(<RideTripModal />, false);
+                    showModal(<RideModal />, false);
                   }}
                   className="w-[18px] h-[18px] text-747474 cursor-pointer"
                 />
@@ -172,7 +172,7 @@ function ByOrderRowView() {
                     key: "selectedRide",
                     value: ride,
                   });
-                  showModal(<RideTripModal />, false);
+                  showModal(<RideModal />, false);
                 }}
                 className="w-[18px] h-[18px] text-747474 cursor-pointer"
               />
@@ -326,7 +326,7 @@ function ByUserRowView() {
                     key: "selectedRide",
                     value: ride,
                   });
-                  showModal(<RideTripModal />, false);
+                  showModal(<RideModal />, false);
                 }}
                 className="w-[18px] h-[18px] text-747474 cursor-pointer"
               />
