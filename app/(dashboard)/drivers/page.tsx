@@ -33,7 +33,7 @@ function Page() {
     handlers.setFetchState({ key: loader, value: true });
 
     // await ApiService.getWithBearerToken({ url: `/user/driver/drivers/all` })
-    await ApiService.getWithBearerToken({ url: `/user/rider/riders/all` })
+    await ApiService.getWithBearerToken({ url: `/user/driver/drivers/all` })
       .then((data) => {
         handlers.setFetchState({ key: loader, value: false });
         const drivers = data?.allDrivers as IUser[];
