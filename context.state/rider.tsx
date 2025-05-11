@@ -5,8 +5,11 @@ import { IUser } from "./auth";
 
 // !Interfaces
 // !Input State
-interface IRidersContextInputState {
-
+export interface IRidersContextInputState {
+  userName: string,
+  email: string,
+  phoneNumber: string,
+  walletBalance: string,
 }
 // !Input State
 
@@ -14,7 +17,9 @@ interface IRidersContextInputState {
 interface IRidersContextLocalState {
     allRiders: IUser[],
     newRiders: IUser[],
-    selectedRider: Rider | null,
+    selectedRider: IUser | null,
+    riderOrders: [],
+    riderTransactions: []
 }
 // !Local State
 
@@ -54,12 +59,17 @@ function RiderContextProvider({ children }: { children: ReactNode }) {
             fetchingRiders: false,
         },
         inputs: {
-
+          email: '',
+          phoneNumber: '',
+          userName: '',
+          walletBalance: '',
         },
         local: {
             allRiders: [],
             newRiders: [],
-            selectedRider: null
+            selectedRider: null,
+            riderOrders: [],
+            riderTransactions: []
         }
     })
 

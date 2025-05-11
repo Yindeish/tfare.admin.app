@@ -96,9 +96,7 @@ function Page() {
 
                   <Expand onClick={() => {
                     handlers.setLocalState({
-                      key: 'selectedRider', value: {
-
-                      }
+                      key: 'selectedRider', value: rider
                     })
                     showModal(<RiderModal />, false)
                   }} className="w-[18px] h-[18px] text-747474 cursor-pointer" />
@@ -182,6 +180,7 @@ function Page() {
                   </div>
 
                   <Expand onClick={() => {
+                    handlers.setLocalState({key: 'selectedRider', value: rider})
                     showModal(<RiderModal />, false)
                   }} className="w-[18px] h-[18px] cursor-pointer" />
                 </div>
