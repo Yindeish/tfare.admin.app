@@ -20,7 +20,7 @@ import { FaRegCirclePause } from "react-icons/fa6";
 import driverImages from "@/constants/images/drivers";
 import { Pdf } from "@/public/icons/driverSvgs";
 import { useModal } from "@/context.state/shared/modal";
-import { useDriverContext } from "@/context.state/driver";
+import { IDriversContextInputState, useDriverContext } from "@/context.state/driver";
 
 type TTab = "order" | "transaction" | "";
 type TView = "vehicle-info" | "orders-transactions" | "";
@@ -121,6 +121,20 @@ function DriverBlock() {
 
   const swipeViewTo = (view: TView) => router.push(`/drivers?view=${view}`);
 
+  useEffect(() => {
+      [
+        { key: "userName", value: local.selectedDriver?.fullName },
+        { key: "email", value: local.selectedDriver?.email },
+        { key: "phoneNumber", value: local.selectedDriver?.phoneNumber },
+        { key: "walletBalance", value: "990809" },
+      ].forEach(({ key, value }) => {
+        handlers.setInputState({
+          key: key as keyof IDriversContextInputState,
+          value,
+        });
+      });
+    }, []);
+
   return (
     <div className="w-[75%] h-[55vh] mx-auto grid grid-cols-[1fr_3fr_3fr] gap-[1em] border-b-[1px] border-b-d7d7d7 pb-[5vh]">
       <div className="col-span-1 h-full border-[1px] border-d7d7d7 rounded-[20px] flex flex-col gap-[7px] justify-center items-center">
@@ -190,50 +204,68 @@ function DriverBlock() {
 
       <div className="col-start-2 col-span-1 h-full flex flex-col justify-between">
         <InputField
-          name="username"
           label="Username"
-          value={local.selectedDriver?.fullName as string}
-          onChange={() => {}}
-          onBlur={() => {}}
+          inputProps={{
+            name:"username",
+            value: inputs.userName,
+            onChange: ({target:{value}}) => {
+              handlers.setInputState({key: 'userName', value })
+            }
+          }}
         />
         <InputField
-          name="email"
           label="Email Address"
-          value={local.selectedDriver?.email as string}
-          onChange={() => {}}
-          onBlur={() => {}}
+          inputProps={{
+            name:"email",
+            value: inputs.email,
+            onChange: ({target:{value}}) => {
+              handlers.setInputState({key: 'email', value})
+            }
+          }}
         />
         <InputField
-          name="bankName"
           label="Bank Name"
-          value={'-'}
-          onChange={() => {}}
-          onBlur={() => {}}
+          inputProps={{
+            name:"bankName",
+            value: inputs.bankName,
+            onChange: ({target:{value}}) => {
+              handlers.setInputState({key: 'bankName', value})
+            }
+          }}
         />
         <InputField
-          name="earnings"
           label="Earnings"
-          value={'-'}
-          onChange={() => {}}
-          onBlur={() => {}}
+          inputProps={{
+            name:"earnings",
+            value: inputs.earnings,
+            onChange: ({target:{value}}) => {
+              handlers.setInputState({key: 'earnings', value})
+            }
+          }}
         />
       </div>
 
       {/* //!Payout Status, Phone Number, Acount Number */}
       <div className="col-start-3 col-span-1 h-full flex flex-col justify-between">
         <InputField
-          name="phoneNumber"
           label="Phone Number"
-          value={String(local.selectedDriver?.phoneNumber)}
-          onChange={() => {}}
-          onBlur={() => {}}
+          inputProps={{
+            name:"phoneNumber",
+            value: inputs.phoneNumber,
+            onChange: ({target:{value}}) => {
+              handlers.setInputState({key: 'phoneNumber', value})
+            }
+          }}
         />
         <InputField
-          name="accountNumber"
           label="Account Number"
-          value={'-'}
-          onChange={() => {}}
-          onBlur={() => {}}
+          inputProps={{
+            name:"accountNumber",
+            value: inputs.accountNumber,
+            onChange: ({target:{value}}) => {
+              handlers.setInputState({key: 'accountNumber', value})
+            }
+          }}
         />
 
         {/* //!Payout Status */}
@@ -268,6 +300,22 @@ function VehicleInfo() {
       state: { fetch, inputs, local },
       handlers,
     } = useDriverContext();
+
+    const driverVehicle = local.selectedDriver?.driverProfile?.vehicle;
+
+    useEffect(() => {
+      [
+        { key: "vehicleColor", value: driverVehicle?.vehicleColor },
+        { key: "vehicleModel", value: driverVehicle?.vehicleModel },
+        { key: "vehicleType", value: driverVehicle?.vehicleType },
+        { key: "vehicleYear", value: driverVehicle?.vehicleYear },
+      ].forEach(({ key, value }) => {
+        handlers.setInputState({
+          key: key as keyof IDriversContextInputState,
+          value,
+        });
+      });
+    }, []);
 
   return (
     <div className="w-[75%] h-fit flex flex-col gap-[3em] mx-auto mt-[5vh]">
@@ -326,39 +374,54 @@ function VehicleInfo() {
         {/* //!Vehicle Type */}
         <div className="col-start-2 col-span-1 h-full flex flex-col justify-between">
           <InputField
-            name="vehicleType"
             label="Vehicle Type"
-            value={local.selectedDriver?.driverProfile?.vehicle?.vehicleType as string}
-            onChange={() => {}}
-            onBlur={() => {}}
+            inputProps={{
+              name:"vehicleType",
+              value: inputs.vehicleType,
+              onChange: ({target:{value}}) => {
+                handlers.setInputState({key: 'vehicleType', value})
+              }
+            }}
           />
           <InputField
-            name="vehicleModel"
             label="Vehicle Model"
-            value={local.selectedDriver?.driverProfile?.vehicle?.vehicleModel as string}
-            onChange={() => {}}
-            onBlur={() => {}}
+            inputProps={{
+              name:"vehicleModel",
+              value: inputs.vehicleModel,
+              onChange: ({target:{value}}) => {
+                handlers.setInputState({key: 'vehicleModel', value})
+              }
+            }}
           />
           <InputField
-            name="vehicleYear"
             label="Vehicle Year"
-            value={String(local.selectedDriver?.driverProfile?.vehicle?.vehicleYear)}
-            onChange={() => {}}
-            onBlur={() => {}}
+            inputProps={{
+              name:"vehicleYear",
+              value: inputs.vehicleYear,
+              onChange: ({target:{value}}) => {
+                handlers.setInputState({key: 'vehicleYear', value})
+              }
+            }}
           />
           <InputField
-            name="vehicleColour"
             label="Vehicle Colour"
-            value={local.selectedDriver?.driverProfile?.vehicle?.vehicleColor as string}
-            onChange={() => {}}
-            onBlur={() => {}}
+            inputProps={{
+              name:"vehicleColour",
+              value: inputs.vehicleColour,
+              onChange: ({target:{value}}) => {
+                handlers.setInputState({key: 'vehicleColour', value})
+              }
+            }}
           />
           <InputField
-            name="License Plate"
             label="License Plate"
-            value={local.selectedDriver?.driverProfile?.vehicle?.vehicleModel as string}
-            onChange={() => {}}
-            onBlur={() => {}}
+            inputProps={{
+              name:"licensePlate",
+              value: inputs.licensePlate,
+              onChange: ({target:{value}}) => {
+                handlers.setInputState({key: 'licensePlate', value})
+              }
+            }}
           />
         </div>
         {/* //!Vehicle Type */}

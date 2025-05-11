@@ -4,7 +4,19 @@ import { IUser } from "./auth";
 
 // !Interfaces
 // !Input State
-interface IDriversContextInputState {}
+export interface IDriversContextInputState {
+  userName: string,
+  email: string,
+  phoneNumber: string,
+  earnings: string,
+  bankName: string,
+  accountNumber: string,
+  vehicleType: string,
+  vehicleModel: string,
+  vehicleYear: string,
+  vehicleColour: string,
+  licensePlate: string,
+}
 // !Input State
 
 // !Local State
@@ -65,7 +77,19 @@ function DriverContextProvider({ children }: { children: ReactNode }) {
     fetch: {
       fetchingDrivers: false,
     },
-    inputs: {},
+    inputs: {
+      email: '',
+      phoneNumber: '',
+      userName: '',
+      earnings: '',
+      bankName: '',
+      accountNumber: '',
+      licensePlate: '',
+      vehicleColour: '',
+      vehicleModel: '',
+      vehicleType: '',
+      vehicleYear: '',
+    },
     local: {
       allDrivers: [],
       newDrivers: [],
